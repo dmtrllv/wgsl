@@ -1,0 +1,17 @@
+{
+	"name": "@wgsl/utils",
+	"type": "module",
+	"main": "./dist/index.js",
+	"version": "0.0.1",
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc -w --preserveWatchOutput"
+	},
+	"types": "./types/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"import": "./dist/index.js"
+		}
+	}
+}

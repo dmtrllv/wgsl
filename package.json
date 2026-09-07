@@ -1,0 +1,23 @@
+{
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"devDependencies": {
+		"@tsconfig/strictest": "^2.0.8",
+		"@types/node": "^26.5.0",
+		"concurrently": "^10.0.5",
+		"nodemon": "^3.1.14",
+		"typescript": "^7.0.2"
+	},
+	"scripts": {
+		"watch": "concurrently npm:watch-*",
+		"watch-cli": "cd apps/cli && npm run watch",
+		"watch-compiler": "cd packages/compiler && npm run watch",
+		"watch-core": "cd packages/core && npm run watch",
+		"watch-utils": "cd packages/utils && npm run watch",
+		"watch-lexer": "cd packages/lexer && npm run watch"
+	}
+}

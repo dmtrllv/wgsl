@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"declaration": true,
+		"sourceMap": true,
+		"types": [
+			"node"
+		]
+	},
+	"extends": "@tsconfig/strictest",
+}

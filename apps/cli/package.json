@@ -1,0 +1,19 @@
+{
+	"name": "@wgsl/cli",
+	"type": "module",
+	"main": "./dist/index.js",
+	"version": "0.0.1",
+	"scripts": {
+		"build": "tsc",
+		"watch": "concurrently npm:watch-*",
+		"watch-ts": "tsc -w --preserveWatchOutput",
+		"watch-relink": "nodemon --watch dist --ext js --exec \"npm link\""
+	},
+	"dependencies": {
+		"@wgsl/core": "0.0.1",
+		"@wgsl/compiler": "0.0.1"
+	},
+	"bin": {
+		"wgsl": "./dist/index.js"
+	}
+}
