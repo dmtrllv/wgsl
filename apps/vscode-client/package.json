@@ -1,0 +1,58 @@
+{
+	"name": "wgsl-client",
+	"displayName": "wgsl-client",
+	"description": "",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.136.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onLanguage:wgsl"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "wgsl-client.helloWorld",
+				"title": "Hello World"
+			}
+		],
+		"languages": [
+			{
+				"id": "wgsl",
+				"aliases": [
+					"WGSL",
+					"wgsl"
+				],
+				"extensions": [
+					".wgsl"
+				]
+			}
+		],
+		"grammars": [
+			{
+				"language": "wgsl",
+				"scopeName": "source.wgsl",
+				"path": "./syntaxes/wgsl.tmLanguage.json"
+			}
+		]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.136.0",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "24.x",
+		"typescript": "^6.0.3"
+	},
+	"overrides": {
+		"diff": "^8.0.4",
+		"serialize-javascript": "^7.0.6"
+	}
+}

@@ -1,0 +1,96 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "WGSL",
+    "scopeName": "source.wgsl",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#types"
+        },
+        {
+            "include": "#builtins"
+        },
+        {
+            "include": "#functions"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#numbers"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.double-slash.wgsl",
+                    "match": "//.*$"
+                },
+                {
+                    "name": "comment.block.wgsl",
+                    "begin": "/\\*",
+                    "end": "\\*/"
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.wgsl",
+                    "match": "\\b(fn|var|let|const|struct|if|else|for|while|loop|continuing|switch|case|default|return|break|continue|discard)\\b"
+                },
+                {
+                    "name": "storage.type.wgsl",
+                    "match": "\\b(var|let|const)\\b"
+                }
+            ]
+        },
+        "types": {
+            "patterns": [
+                {
+                    "name": "support.type.wgsl",
+                    "match": "\\b(bool|i32|u32|f32|f16|vec[234](f|i|u)|mat[234]x[234](f|h)|array|atomic|ptr)\\b"
+                }
+            ]
+        },
+        "builtins": {
+            "patterns": [
+                {
+                    "name": "support.function.wgsl",
+                    "match": "\\b(position|frag_depth|front_facing|global_invocation_id|local_invocation_id|local_invocation_index|instance_index|vertex_index)\\b"
+                }
+            ]
+        },
+        "functions": {
+            "patterns": [
+                {
+                    "name": "entity.name.function.wgsl",
+                    "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()"
+                }
+            ]
+        },
+        "strings": {
+            "patterns": [
+                {
+                    "name": "string.quoted.double.wgsl",
+                    "begin": "\"",
+                    "end": "\""
+                }
+            ]
+        },
+        "numbers": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.wgsl",
+                    "match": "\\b[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?[fiu]?\\b"
+                }
+            ]
+        }
+    }
+}
