@@ -51,7 +51,7 @@ export class Compiler {
 			const source = await this.getSource(path, ctx);
 			if (isDiagnosticError(source))
 				return source;
-			return parseSource(source, ctx);
+			return parseSource(path, source, ctx);
 		});
 	}
 

@@ -1,12 +1,43 @@
 export type Span = {
 	readonly start: number;
 	readonly end: number;
-}
+};
 
-export type Position = {
-	readonly offset: number;
-	readonly line: number;
-	readonly column: number;
+export const spanWithSize = (start: number, size: number): Span => span(start, start + size);
+
+export const span = (start: number, end: number): Span => {
+	return {
+		start,
+		end
+	};
+};
+
+export class Position {
+	public line: number = 1;
+	public column: number = 1;
+	public offset: number = 0;
+
+	public advance(string: string) {
+		for (const c of string) {
+			this.offset += 1;
+
+			switch (c) {
+				case '\n':
+					this.column = 1;
+					this.line += 1;
+					break;
+				case '\t':
+					this.column += (this.column - (this.column % 4));
+					break;
+				default:
+					this.column += 1;
+			}
+		}
+	}
+
+	public clone(): Position {
+		return Object.assign(new Position(), this);
+	}
 }
 
 export type Diagnostic = {
@@ -59,6 +90,12 @@ export class DiagnosticsContext {
 			}
 		}
 	}
+
+	public assert(condition: boolean | (() => boolean), message: string) {
+		if(!condition) {
+			throw new DiagnosticError(DiagnosticSeverity.Assert, message);
+		}
+	}
 }
 
 export const isDiagnosticError = (value: any): value is DiagnosticError => value instanceof DiagnosticError;
@@ -79,7 +116,8 @@ export class DiagnosticError extends Error implements Diagnostic {
 export const DiagnosticSeverity = {
 	Error: "Error",
 	Warning: "Warning",
-	Info: "Info"
+	Info: "Info",
+	Assert: "Assert"
 } as const;
 
 export type DiagnosticSeverity = keyof typeof DiagnosticSeverity;
