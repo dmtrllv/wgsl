@@ -1,1 +1,1 @@
-export * from "./map.js";
+export * from "./object.js";

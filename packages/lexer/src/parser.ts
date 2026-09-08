@@ -15,10 +15,10 @@ export const parseSource = (path: string, source: string, ctx: DiagnosticsContex
 				tokens.push(parseComment(iter, cursor));
 				continue;
 			} else if (iter.isNext("'")) {
-				tokens.push(parseStrLiteral(iter, cursor));
+				tokens.push(parseCharLiteral(iter, cursor));
 				continue;
 			} else if (iter.isNext('"')) {
-				tokens.push(parseCharLiteral(iter, cursor));
+				tokens.push(parseStrLiteral(iter, cursor));
 				continue;
 			} else if (iter.matchesNext(isWhitespace)) {
 				tokens.push(parseToken("Whitespace", iter.next(), cursor));
@@ -118,7 +118,7 @@ const parseStrLiteral = (iter: Iter, cursor: Position): Token => {
 			return true;
 		}
 
-		if (c === "'")
+		if (c === '"')
 			return false;
 
 		if (c === '\\') {

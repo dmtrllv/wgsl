@@ -1,5 +1,5 @@
 {
-	"name": "@wgsl/compiler",
+	"name": "@wgsl/ast",
 	"type": "module",
 	"main": "./dist/index.js",
 	"version": "0.0.1",
@@ -16,8 +16,7 @@
 	},
 	"dependencies": {
 		"@wgsl/core": "0.0.1",
-		"@wgsl/lexer": "0.0.1",
 		"@wgsl/utils": "0.0.1",
-		"@wgsl/ast": "0.0.1"
+		"@wgsl/lexer": "0.0.1"
 	}
 }

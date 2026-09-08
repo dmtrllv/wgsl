@@ -91,10 +91,16 @@ export class DiagnosticsContext {
 		}
 	}
 
-	public assert(condition: boolean | (() => boolean), message: string) {
-		if(!condition) {
-			throw new DiagnosticError(DiagnosticSeverity.Assert, message);
+	public assert(condition: (() => boolean), message: string, source?: string | undefined, span?: Span | undefined) {
+		if (!condition()) {
+			throw new DiagnosticError(DiagnosticSeverity.Assert, message, source, span);
 		}
+	}
+
+	public log() {
+		this.diagnostics.forEach(d => {
+			console.log(d.severity + ':', d.message, d);
+		});
 	}
 }
 

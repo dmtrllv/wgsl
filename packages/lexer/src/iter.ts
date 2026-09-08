@@ -1,4 +1,4 @@
-import { DiagnosticsContext } from "@wgsl/core";
+import { DiagnosticsContext, span } from "@wgsl/core";
 
 export class Iter {
 	//private readonly _path: string;
@@ -35,7 +35,7 @@ export class Iter {
 	}
 
 	public next(): string {
-		this._ctx.assert(!this.ended, `End of file reached!`);
+		this._ctx.assert(() => !this.ended, `End of file reached!`, this._source, span(this._nextPtr, this._nextPtr));
 		return this._source[this._nextPtr++]!;
 	}
 
@@ -59,7 +59,7 @@ export class Iter {
 	}
 
 	public peek(): string {
-		this._ctx.assert(!this.ended, `End of file reached!`);
+		this._ctx.assert(() => !this.ended, `End of file reached!`);
 		return this._source[this._nextPtr]!;
 	}
 }
