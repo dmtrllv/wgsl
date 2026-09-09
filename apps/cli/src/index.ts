@@ -12,3 +12,7 @@ const ctx = new DiagnosticsContext();
 await compiler.compileAll(ctx);
 
 ctx.log();
+
+const x = await compiler.getAst("test.wgsl", ctx);
+
+console.log(x);

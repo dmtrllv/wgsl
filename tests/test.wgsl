@@ -1,4 +1,4 @@
-@import("base.wgsl")
+import "base";
 
 @material {
 	var<uniform> albedo : vec4f;

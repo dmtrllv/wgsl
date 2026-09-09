@@ -1,5 +1,5 @@
 import { DiagnosticError, DiagnosticsContext, Position, spanWithSize } from "@wgsl/core";
-import { isIdentifier, isKeyword, isOperator, isSeparator, isWhitespace, token, Token, TokenType } from "./token.js";
+import { isIdentifier, isKeyword, isOperator, isSeparator, isWhitespace, Sep, token, Token, TokenType, Whitespace, Unknown, Op, Comment, NumberLiteral, CharLiteral, ident, StrLiteral, Keyword } from "./token.js";
 import { Iter } from "./iter.js";
 
 export const parseSource = (path: string, source: string, ctx: DiagnosticsContext): Token[] | DiagnosticError => {
@@ -13,32 +13,29 @@ export const parseSource = (path: string, source: string, ctx: DiagnosticsContex
 		while (!iter.ended) {
 			if (iter.isNext("//")) {
 				tokens.push(parseComment(iter, cursor));
-				continue;
 			} else if (iter.isNext("'")) {
 				tokens.push(parseCharLiteral(iter, cursor));
-				continue;
 			} else if (iter.isNext('"')) {
 				tokens.push(parseStrLiteral(iter, cursor));
-				continue;
 			} else if (iter.matchesNext(isWhitespace)) {
-				tokens.push(parseToken("Whitespace", iter.next(), cursor));
+				tokens.push(createToken(Whitespace, iter.next(), cursor));
 			} else if (iter.matchesNext(c => /[0-9]/.test(c))) {
 				tokens.push(parseNumberLiteral(iter, cursor));
 			} else if (iter.matchesNext(isSeparator)) {
-				tokens.push(parseToken("Sep", iter.next(), cursor));
+				tokens.push(parseSep(iter, cursor));
 			} else if (iter.matchesNext(isOperator)) {
 				tokens.push(parseOp(iter, cursor));
 			} else if (iter.matchesNext(c => /[a-zA-Z_]/.test(c))) {
 				const str = iter.collectWhile(c => /[a-zA-Z_]/.test(c));
 				if (isKeyword(str)) {
-					tokens.push(parseToken("Keyword", str, cursor));
+					tokens.push(parseKeyword(str, cursor));
 				} else if (isIdentifier(str)) {
-					tokens.push(parseToken("Ident", str, cursor));
+					tokens.push(createToken(ident(str), str, cursor));
 				} else {
-					tokens.push(parseToken("Unknown", str, cursor));
+					tokens.push(createToken(Unknown, str, cursor));
 				}
 			} else {
-				tokens.push(parseToken("Unknown", iter.next(), cursor));
+				tokens.push(createToken(Unknown, iter.next(), cursor));
 			}
 		}
 
@@ -46,8 +43,19 @@ export const parseSource = (path: string, source: string, ctx: DiagnosticsContex
 	})
 };
 
-const parseToken = (type: TokenType, str: string, cursor: Position): Token => {
-	if (type === "Unknown")
+const parseSep = (iter: Iter, cursor: Position): Token => {
+	const str = iter.next();
+	const sep = Object.values(Sep).find(s => s.sep === str)!; // todo error check
+	return createToken(sep, str, cursor);
+};
+
+const parseKeyword = (str: string, cursor: Position): Token => {
+	const keyword = Object.values(Keyword).find(s => s.keyword === str)!; // todo error check
+	return createToken(keyword, str, cursor);
+};
+
+const createToken = (type: TokenType, str: string, cursor: Position): Token => {
+	if (type === Unknown)
 		console.log(`Unknown token `, str, cursor);
 
 	const span = spanWithSize(cursor.offset, str.length);
@@ -58,12 +66,13 @@ const parseToken = (type: TokenType, str: string, cursor: Position): Token => {
 
 const parseComment = (iter: Iter, cursor: Position): Token => {
 	const str = iter.collectWhile(c => c !== '\r' && c !== '\n');
-	return parseToken("Comment", str, cursor);
+	return createToken(Comment, str, cursor);
 };
 
 const parseOp = (iter: Iter, cursor: Position): Token => {
 	const str = iter.collectWhile((c, buffer) => isOperator(buffer + c));
-	return parseToken("Op", str, cursor);
+	const op = Object.values(Op).find(s => s.op === str)!; // todo error check
+	return createToken(op, str, cursor);
 };
 
 const parseNumberLiteral = (iter: Iter, cursor: Position): Token => {
@@ -83,7 +92,7 @@ const parseNumberLiteral = (iter: Iter, cursor: Position): Token => {
 		return false;
 	});
 
-	return parseToken("NumberLiteral", str, cursor);
+	return createToken(NumberLiteral, str, cursor);
 };
 
 const parseCharLiteral = (iter: Iter, cursor: Position): Token => {
@@ -106,7 +115,7 @@ const parseCharLiteral = (iter: Iter, cursor: Position): Token => {
 	});
 	str += iter.next();
 
-	return parseToken("CharLiteral", str, cursor);
+	return createToken(CharLiteral, str, cursor);
 };
 
 const parseStrLiteral = (iter: Iter, cursor: Position): Token => {
@@ -129,5 +138,5 @@ const parseStrLiteral = (iter: Iter, cursor: Position): Token => {
 	});
 	str += iter.next();
 
-	return parseToken("StrLiteral", str, cursor);
+	return createToken(StrLiteral, str, cursor);
 };

@@ -1,7 +1,7 @@
 
 import { DiagnosticError, DiagnosticsContext, DiagnosticSeverity, isDiagnosticError } from "@wgsl/core";
 import { parseSource, Token } from "@wgsl/lexer";
-import { Ast, parseTokens } from "@wgsl/ast";
+import { ModuleAst, parseTokens } from "@wgsl/ast";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { isAbsolute, join, sep as PATH_SEP } from "node:path";
 import { mapParallel } from "@wgsl/utils";
@@ -10,7 +10,7 @@ export class Compiler {
 	public readonly rootDir: string;
 	public readonly sources: Map<string, string> = new Map();
 	public readonly tokens: Map<string, Token[]> = new Map();
-	public readonly asts: Map<string, Ast> = new Map();
+	public readonly asts: Map<string, ModuleAst> = new Map();
 
 	public constructor(rootDir: string) {
 		this.rootDir = rootDir + PATH_SEP;
@@ -67,7 +67,6 @@ export class Compiler {
 	public async getTokens(path: string, ctx: DiagnosticsContext) {
 		return ctx.tryAsync(async () => {
 			path = this.getRelativePath(path);
-			console.log(path);
 
 			if (this.tokens.has(path))
 				return this.tokens.get(path)!;
@@ -93,12 +92,17 @@ export class Compiler {
 			if (this.asts.has(path))
 				return this.asts.get(path)!;
 
+			const source = await this.getSource(path, ctx);
+
+			if (isDiagnosticError(source))
+				return source;
+
 			const tokens = await this.getTokens(path, ctx);
 
 			if (isDiagnosticError(tokens))
 				return tokens;
 			
-			const ast = parseTokens(path, tokens, ctx);
+			const ast = parseTokens(source, tokens, ctx);
 
 			if (!isDiagnosticError(tokens))
 				this.asts.set(path, ast);
