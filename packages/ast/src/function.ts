@@ -7,6 +7,7 @@ import { IdentAst, parseIdent } from "./ident.js";
 import { Keyword, Sep } from "@wgsl/lexer";
 import { parseScope } from "./scope.js";
 import { parseType, TypeAst } from "./type.js";
+import { ExprAst, parseExpr } from "./expr.js";
 
 export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<FunctionAst>(iter, () => {
 	iter.expect(Keyword.Fn);
@@ -23,13 +24,14 @@ export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: Diagn
 export const parseFunctionArgList = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<FunctionArgListAst>(iter, () => {
 	let args: FunctionArgAst[] = [];
 	iter.expect(Sep.LParen);
-	if (iter.nextIf(Sep.RParen) !== null) {
-		while (!iter.ended) {
-			args.push(parseFunctionArg(iter, ctx));
-			if (iter.nextIf(Sep.Comma) === null) {
-				iter.expect(Sep.RParen);
-				break;
-			}
+	while (!iter.ended) {
+		if (iter.nextIf(Sep.RParen)) {
+			break;
+		}
+		args.push(parseFunctionArg(iter, ctx));
+		if (iter.nextIf(Sep.Comma) === null) {
+			iter.expect(Sep.RParen);
+			break;
 		}
 	}
 	return {
@@ -45,10 +47,42 @@ export const parseFunctionArg = (iter: Iter, ctx: DiagnosticsContext) => parseWi
 	const typeName = parseType(iter, ctx);
 	return {
 		type: "FunctionArg",
+		attributes: [],
 		name,
 		typeName
 	}
 });
+
+export const parseFunctionArgExprList = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<FunctionArgExprListAst>(iter, () => {
+	const args: ExprAst[] = [];
+	iter.expect(Sep.LParen);
+	while (!iter.ended) {
+		if (iter.nextIf(Sep.RParen)) {
+			break;
+		}
+		args.push(parseExpr(iter, ctx));
+		if (iter.nextIf(Sep.Comma) === null) {
+			iter.expect(Sep.RParen);
+			break;
+		}
+	}
+	return {
+		type: "FunctionArgExprList",
+		arguments: args
+	}
+});
+
+export const parseFunctionCall = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<FunctionCallAst>(iter, () => {
+	const name = parseIdent(iter);
+
+	const args: ExprAst[] = [];
+
+	return {
+		type: "FunctionCall",
+		name,
+		arguments: args
+	}
+})
 
 export type FunctionAst = AstType<"Function", {
 	name: IdentAst,
@@ -64,3 +98,12 @@ export type FunctionArgAst = AstType<"FunctionArg", {
 	name: IdentAst;
 	typeName: TypeAst;
 }>;
+
+export type FunctionArgExprListAst = AstType<"FunctionArgExprList", {
+	arguments: ExprAst[];
+}>;
+
+export type FunctionCallAst = AstType<"FunctionCall", {
+	name: IdentAst,
+	arguments: ExprAst[];
+}>

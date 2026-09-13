@@ -5,7 +5,7 @@ import { AstType } from "./ast.js";
 import { AttributeAst } from "./attr.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
 import { IdentAst, parseIdent } from "./ident.js";
-import { parseFunctionArgList } from "./function.js";
+import { parseFunctionArgExprList } from "./function.js";
 import { parseType, TypeAst } from "./type.js";
 
 export const parseStruct = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<StructAst>(iter, () => {
@@ -15,8 +15,16 @@ export const parseStruct = (iter: Iter, attributes: AttributeAst[], ctx: Diagnos
 
 	const properties: StructPropertyAst[] = [];
 
-	while (!iter.nextIf(Sep.RBrace)) {
-		properties.push(parseProperty(iter, ctx))
+	while (!iter.ended) {
+		if (iter.isNext(Sep.RBrace)) {
+			break;
+		}
+
+		properties.push(parseProperty(iter, ctx));
+
+		if (!iter.nextIf(Sep.Comma)) {
+			break;
+		}
 	}
 
 	iter.expect(Sep.RBrace);
@@ -50,15 +58,14 @@ export const parseProperty = (iter: Iter, ctx: DiagnosticsContext) => parseWithS
 
 const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst>(iter, () => {
 	const name = parseIdent(iter);
+	const args = iter.isNext(Sep.LParen) ? parseFunctionArgExprList(iter, ctx) : null;
 
 	return {
 		type: "Attribute",
-		args: parseFunctionArgList(iter, ctx),
+		arguments: args,
 		name
 	};
 });
-
-
 
 export type StructAst = AstType<"Struct", {
 	attributes: AttributeAst[];
