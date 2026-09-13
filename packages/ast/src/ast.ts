@@ -8,7 +8,7 @@ import { RenderPassAst } from "./pass.js";
 import { IdentAst } from "./ident.js";
 import { StmtScopeAst } from "./scope.js";
 import { GroupBlockAst } from "./group_block.js";
-import { TypeAsts } from "./type_name.js";
+import { TypeAst } from "./type.js";
 
 export type AstType<Name extends string, Data extends {} = {}> = {
 	readonly type: Name;
@@ -18,7 +18,7 @@ export type AstType<Name extends string, Data extends {} = {}> = {
 export type Ast =
 	| ModuleAst
 	| DeclarationAsts
-	| TypeAsts
+	| TypeAst
 	| MiscAsts;
 
 export type DeclarationAsts =

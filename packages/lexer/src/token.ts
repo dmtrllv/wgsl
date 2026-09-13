@@ -10,18 +10,18 @@ export type Token = {
 	readonly position: Position;
 };
 
-export type TokenType = 
-| Whitespace
-| Op
-| Sep
-| Keyword
-| Ident
-| StrLiteral
-| CharLiteral
-| NumberLiteral
-| BoolLiteral
-| Comment
-| Unknown;
+export type TokenType =
+	| Whitespace
+	| Op
+	| Sep
+	| Keyword
+	| Ident
+	| StrLiteral
+	| CharLiteral
+	| NumberLiteral
+	| BoolLiteral
+	| Comment
+	| Unknown;
 
 export type Whitespace = TokenKind<"Whitespace">;
 export type Op = TokenKind<"Operator", { readonly op: string }>;
@@ -164,11 +164,24 @@ export const isKeyword = (str: string) => !!Object.keys(Keyword).find(k => Keywo
 export const isWhitespace = (str: string) => WHITESPACES.includes(str);
 
 export const isIdentifier = (str: string) => {
-	if(str.length === 0)
+	if (str.length === 0)
 		return false;
-	if(!/[a-zA-Z_]/.test(str[0]!))
+	if (!/[a-zA-Z_]/.test(str[0]!))
 		return false;
-	if(str.length === 1)
+	if (str.length === 1)
 		return true;
 	return /[a-zA-Z0-9_]/.test(str.slice(1));
+};
+
+export const tokenTypeToString = (token: TokenType) => {
+	switch (token.kind) {
+		case "Operator":
+			return token.op;
+		case "Separator":
+			return token.sep;
+		case "Keyword":
+			return token.keyword;
+		default:
+			return token.kind;
+	}
 };

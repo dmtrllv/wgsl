@@ -6,7 +6,7 @@ import { AttributeAst } from "./attr.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
 import { IdentAst, parseIdent } from "./ident.js";
 import { parseFunctionArgList } from "./function.js";
-import { parseTypeName, TypeAsts } from "./type_name.js";
+import { parseType, TypeAst } from "./type.js";
 
 export const parseStruct = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<StructAst>(iter, () => {
 	iter.expect(Keyword.Struct);
@@ -38,7 +38,7 @@ export const parseProperty = (iter: Iter, ctx: DiagnosticsContext) => parseWithS
 
 	const name = parseIdent(iter);
 	iter.expect(Sep.Colon);
-	const typeName = parseTypeName(iter, ctx);
+	const typeName = parseType(iter, ctx);
 
 	return {
 		type: "StructProperty",
@@ -69,5 +69,5 @@ export type StructAst = AstType<"Struct", {
 export type StructPropertyAst = AstType<"StructProperty", {
 	attributes: AttributeAst[];
 	name: IdentAst;
-	typeName: TypeAsts;
+	typeName: TypeAst;
 }>;

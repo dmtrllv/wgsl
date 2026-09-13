@@ -16,21 +16,31 @@ export class Position {
 	public line: number = 1;
 	public column: number = 1;
 	public offset: number = 0;
+	public columnOffset: number = 1;
 
 	public advance(string: string) {
 		for (const c of string) {
-			this.offset += 1;
+			this.offset++;
 
 			switch (c) {
+				case '\r':
+					break;
+
 				case '\n':
+					this.line++;
+					this.columnOffset = 1;
 					this.column = 1;
-					this.line += 1;
 					break;
+
 				case '\t':
-					this.column += (this.column - (this.column % 4));
+					this.column += 4 - ((this.column - 1) % 4);
+					this.columnOffset++;
 					break;
+
 				default:
-					this.column += 1;
+					this.column++;
+					this.columnOffset++;
+					break;
 			}
 		}
 	}
@@ -99,12 +109,18 @@ export class DiagnosticsContext {
 
 	public log() {
 		this.diagnostics.forEach(d => {
-			console.log(d.severity + ':', d.message, d);
+			if (d instanceof DiagnosticError) {
+				console.log(d.stack);
+			} else {
+				//	//console.log(d.severity + ':', d.message);
+			}
 		});
 	}
 }
 
 export const isDiagnosticError = (value: any): value is DiagnosticError => value instanceof DiagnosticError;
+
+const isDev = process.env["NODE_ENV"] === "development";
 
 export class DiagnosticError extends Error implements Diagnostic {
 	public readonly severity: DiagnosticSeverity;
@@ -112,10 +128,13 @@ export class DiagnosticError extends Error implements Diagnostic {
 	public readonly span: Span | undefined;
 
 	public constructor(severity: DiagnosticSeverity, message: string, source?: string, span?: Span) {
-		super(message);
+		super();
 		this.severity = severity;
 		this.source = source;
 		this.span = span;
+		const stack = isDev ? (this.stack || "").split("\n").slice(1).join("\n") : "";
+		this.stack = `${this.constructor.name}: ${message} \n${stack}`;
+		this.message = message;
 	}
 }
 

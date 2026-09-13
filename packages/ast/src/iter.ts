@@ -1,5 +1,5 @@
 import { DiagnosticError, DiagnosticsContext, DiagnosticSeverity, span } from "@wgsl/core";
-import { Token, TokenType, Whitespace } from "@wgsl/lexer";
+import { Token, TokenType, tokenTypeToString, Whitespace } from "@wgsl/lexer";
 
 export class Iter {
 	public readonly sourcePath: string;
@@ -58,8 +58,11 @@ export class Iter {
 
 	public expect(type: TokenType) {
 		const token = this.next();
-		if (token.type !== type)
-			throw new DiagnosticError(DiagnosticSeverity.Error, `Expected ${type.kind} but found ${token.type.kind} at ${this.sourcePath}:${token.position.line}:${token.position.column}!`);
+		if (token.type !== type) {
+			const tokenValue = tokenTypeToString(type);
+			const value = this.getSource(token);
+			throw new DiagnosticError(DiagnosticSeverity.Error, `Expected ${tokenValue} but found ${token.type.kind}(${value}) at ${this.sourcePath}:${token.position.line}:${token.position.column}!`);
+		}
 		return token;
 	}
 

@@ -141,11 +141,13 @@ export class Compiler {
 		return paths;
 	}
 
-	public async compileAll(ctx: DiagnosticsContext) {
+	public async compileAll(ctx: DiagnosticsContext): Promise<boolean> {
 		const paths = await this.getAllSourcePaths();
 
 		await mapParallel(paths, async path => {
 			await this.getAst(path, ctx);
 		});
+
+		return ctx.diagnostics.length === 0;
 	}
 }

@@ -57,9 +57,9 @@ const parseKeyword = (str: string, cursor: Position): Token => {
 const createToken = (type: TokenType, str: string, cursor: Position): Token => {
 	if (type === Unknown)
 		console.log(`Unknown token `, str, cursor);
+	const pos = cursor.clone();
 
 	const span = spanWithSize(cursor.offset, str.length);
-	const pos = cursor.clone();
 	cursor.advance(str);
 	return token(type, span, pos);
 };

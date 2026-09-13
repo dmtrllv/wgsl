@@ -6,7 +6,7 @@ import { parseWithSpan } from "./parser.js";
 import { IdentAst, parseIdent } from "./ident.js";
 import { Keyword, Sep } from "@wgsl/lexer";
 import { parseScope } from "./scope.js";
-import { parseTypeName, TypeAsts } from "./type_name.js";
+import { parseType, TypeAst } from "./type.js";
 
 export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<FunctionAst>(iter, () => {
 	iter.expect(Keyword.Fn);
@@ -42,7 +42,7 @@ export const parseFunctionArgList = (iter: Iter, ctx: DiagnosticsContext) => par
 export const parseFunctionArg = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<FunctionArgAst>(iter, () => {
 	const name = parseIdent(iter);
 	iter.expect(Sep.Colon);
-	const typeName = parseTypeName(iter, ctx);
+	const typeName = parseType(iter, ctx);
 	return {
 		type: "FunctionArg",
 		name,
@@ -62,5 +62,5 @@ export type FunctionArgListAst = AstType<"FunctionArgList", {
 
 export type FunctionArgAst = AstType<"FunctionArg", {
 	name: IdentAst;
-	typeName: TypeAsts;
+	typeName: TypeAst;
 }>;

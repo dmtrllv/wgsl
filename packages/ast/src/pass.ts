@@ -6,7 +6,7 @@ import { parseWithSpan } from "./parser.js";
 import { StructAst } from "./struct.js";
 import { FunctionAst } from "./function.js";
 import { DiagnosticsContext } from "@wgsl/core";
-import { TypeNameAst } from "./type_name.js";
+import { ConcreteTypeAst } from "./type.js";
 
 export const parseRenderPass = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<RenderPassAst>(iter, () => {
 	const name = parseIdent(iter);
@@ -67,7 +67,7 @@ export type RenderPassAst = AstType<"RenderPass", {
 export type RenderPassResourceAst = AstType<"RenderPass", {
 	resourceName: IdentAst,
 	name: IdentAst,
-	typeName: TypeNameAst,
+	typeName: ConcreteTypeAst,
 }>
 
 type DeclarationAst = StructAst | FunctionAst | VarAsts;

@@ -7,7 +7,7 @@
 		"build": "tsc",
 		"watch": "concurrently npm:watch-*",
 		"watch-ts": "tsc -w --preserveWatchOutput",
-		"watch-relink": "nodemon --watch dist --ext js --exec \"npm link\""
+		"watch-relink": "nodemon --delay 1 --watch dist --ext js --exec \"npm link\" "
 	},
 	"dependencies": {
 		"@wgsl/core": "0.0.1",
