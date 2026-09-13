@@ -60,7 +60,7 @@ export const parseFunctionArgExprList = (iter: Iter, ctx: DiagnosticsContext) =>
 		if (iter.nextIf(Sep.RParen)) {
 			break;
 		}
-		args.push(parseExpr(iter, ctx));
+		args.push(parseExpr(iter, 0, ctx));
 		if (iter.nextIf(Sep.Comma) === null) {
 			iter.expect(Sep.RParen);
 			break;
