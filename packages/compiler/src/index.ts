@@ -102,7 +102,7 @@ export class Compiler {
 			if (isDiagnosticError(tokens))
 				return tokens;
 			
-			const ast = parseTokens(source, tokens, ctx);
+			const ast = parseTokens(path, source, tokens, ctx);
 
 			if (!isDiagnosticError(tokens))
 				this.asts.set(path, ast);

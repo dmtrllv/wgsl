@@ -1,14 +1,19 @@
-import { DiagnosticsContext } from "@wgsl/core";
+import { DiagnosticsContext, DiagnosticSeverity } from "@wgsl/core";
 import { Iter } from "./iter.js";
-import { AstType, DeclarationAst } from "./ast.js";
+import { AstType, DeclarationAsts, VarAsts } from "./ast.js";
 import { ImportAst, parseImport } from "./import.js";
 import { parseWithSpan } from "./parser.js";
-import { Keyword, Op } from "@wgsl/lexer";
-import { MetaAst, parseMetaExpr } from "./meta.js";
+import { Keyword, Op, Sep } from "@wgsl/lexer";
+import { AttributeAst } from "./attr.js";
+import { parseStruct, StructAst } from "./struct.js";
+import { FunctionAst, parseFunction, parseFunctionArgList } from "./function.js";
+import { parseRenderPass, RenderPassAst } from "./pass.js";
+import { parseIdent } from "./ident.js";
+import { GroupBlockAst, parseGroupBlock } from "./group_block.js";
 
 export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
 	const imports: ImportAst[] = [];
-	const declarations: DeclarationAst[] = [];
+	const declarations: DeclarationAsts[] = [];
 
 	while (!iter.ended) {
 		const token = iter.peek();
@@ -17,10 +22,18 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 				imports.push(parseImport(iter));
 				break;
 			case Op.At:
-				declarations.push(parseMeta(iter, ctx));
+				declarations.push(parseAttributed(iter, ctx));
+				break;
+			case Keyword.Struct:
+				declarations.push(parseStruct(iter, [], ctx));
+				break;
+			case Keyword.Fn:
+				declarations.push(parseFunction(iter, [], ctx));
 				break;
 			default:
-				iter.next();
+				const token = iter.next();
+				ctx.add(DiagnosticSeverity.Error, `Invalid token ${token}!`);
+				break;
 		}
 	}
 
@@ -31,34 +44,65 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 	};
 });
 
-const parseMeta = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationAst>(iter, () => {
-	const meta: MetaAst[] = [];
+const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr>(iter, () => {
+	const attributes: AttributeAst[] = [];
 	while (iter.isNext(Op.At)) {
-		meta.push(parseMetaExpr(iter, ctx));
+		const attr = parseAttribute(iter, ctx);
+		if (attr.type === "Attribute") {
+			attributes.push(attr);
+		} else {
+			return attr;
+		}
 	}
+
 	const token = iter.peek();
 	switch (token.type) {
 		case Keyword.Struct:
-			console.log("todo parse Keyword.Struct");
-			iter.next();
-			break;
+			return parseStruct(iter, attributes, ctx);
 		case Keyword.Fn:
-			console.log("todo parse Keyword.Fn");
-			iter.next();
-			break;
+			return parseFunction(iter, attributes, ctx);
 		case Keyword.Var:
-			console.log("todo parse Keyword.Var");
-			iter.next();
-			break;
+			throw new Error("Todo");
 		default:
-			iter.next();
+			console.log(token);
+			throw new Error("Invalidos!");
 	}
-	if(meta.length)
-		console.log(meta)
-	return { type: "Struct", meta }
+});
+
+const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst | GroupBlockAst | RenderPassAst>(iter, () => {
+	iter.expect(Op.At);
+	const ident = parseIdent(iter);
+	switch (ident.value) {
+		case "object":
+		case "material":
+		case "global":
+			return parseGroupBlock(iter, ident.value, ctx);
+		case "pass":
+			return parseRenderPass(iter, ctx);
+		default:
+			if (iter.isNext(Sep.LParen)) {
+				return {
+					type: "Attribute",
+					args: parseFunctionArgList(iter, ctx),
+
+				};
+			} else {
+				return {
+					type: "Attribute",
+					args: []
+				};
+			}
+	}
 });
 
 export type ModuleAst = AstType<"Module", {
 	readonly imports: ImportAst[];
-	readonly declarations: DeclarationAst[];
+	readonly declarations: DeclarationAsts[];
 }>;
+
+type DeclarationWithAttr =
+	| StructAst
+	| FunctionAst
+	| VarAsts
+	| GroupBlockAst
+	| RenderPassAst;

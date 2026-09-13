@@ -2,6 +2,8 @@ import { DiagnosticError, DiagnosticsContext, DiagnosticSeverity, span } from "@
 import { Token, TokenType, Whitespace } from "@wgsl/lexer";
 
 export class Iter {
+	public readonly sourcePath: string;
+
 	private readonly _source: string;
 	private readonly _tokens: Token[];
 	private readonly _ctx: DiagnosticsContext;
@@ -17,14 +19,15 @@ export class Iter {
 		return this._nextPtr >= this._tokens.length;
 	}
 
-	public constructor(source: string, tokens: Token[], ctx: DiagnosticsContext) {
+	public constructor(path: string, source: string, tokens: Token[], ctx: DiagnosticsContext) {
+		this.sourcePath = path;
 		this._source = source;
 		this._tokens = tokens;
 		this._ctx = ctx;
 	}
 
 	private skipWhitespace() {
-		while(this._tokens[this._nextPtr]?.type === Whitespace) {
+		while (this._tokens[this._nextPtr]?.type === Whitespace) {
 			this._nextPtr++;
 		}
 	}
@@ -55,8 +58,8 @@ export class Iter {
 
 	public expect(type: TokenType) {
 		const token = this.next();
-		if(token.type !== type)
-			throw new DiagnosticError(DiagnosticSeverity.Error, `Expected ${type.kind} but found ${token.type.kind}!`);
+		if (token.type !== type)
+			throw new DiagnosticError(DiagnosticSeverity.Error, `Expected ${type.kind} but found ${token.type.kind} at ${this.sourcePath}:${token.position.line}:${token.position.column}!`);
 		return token;
 	}
 
@@ -65,7 +68,7 @@ export class Iter {
 	}
 
 	public nextIf(type: TokenType): Token | null {
-		if(this.peek().type === type) {
+		if (this.peek().type === type) {
 			return this.next();
 		}
 		return null;

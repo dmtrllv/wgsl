@@ -4,8 +4,8 @@ import { Iter } from "./iter.js";
 import { parseModule } from "./module.js";
 import { Ast } from "./ast.js";
 
-export const parseTokens = (source: string, tokens: Token[], ctx: DiagnosticsContext) => {
-	const iter = new Iter(source, tokens, ctx);
+export const parseTokens = (path: string, source: string, tokens: Token[], ctx: DiagnosticsContext) => {
+	const iter = new Iter(path, source, tokens, ctx);
 	return parseModule(iter, ctx);
 };
 

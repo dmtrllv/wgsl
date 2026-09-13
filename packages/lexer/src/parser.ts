@@ -25,8 +25,8 @@ export const parseSource = (path: string, source: string, ctx: DiagnosticsContex
 				tokens.push(parseSep(iter, cursor));
 			} else if (iter.matchesNext(isOperator)) {
 				tokens.push(parseOp(iter, cursor));
-			} else if (iter.matchesNext(c => /[a-zA-Z_]/.test(c))) {
-				const str = iter.collectWhile(c => /[a-zA-Z_]/.test(c));
+			} else if (iter.matchesNext(c => /[a-zA-Z0-9_]/.test(c))) {
+				const str = iter.collectWhile(c => /[a-zA-Z0-9_]/.test(c));
 				if (isKeyword(str)) {
 					tokens.push(parseKeyword(str, cursor));
 				} else if (isIdentifier(str)) {

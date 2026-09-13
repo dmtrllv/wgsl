@@ -2,18 +2,20 @@ import { DiagnosticsContext } from "@wgsl/core";
 import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
 import { AstType } from "./ast.js";
-import { MetaAst, parseMetaExpr } from "./meta.js";
+import { AttributeAst } from "./attr.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
-import { parseIdent } from "./ident.js";
+import { IdentAst, parseIdent } from "./ident.js";
+import { parseFunctionArgList } from "./function.js";
+import { parseTypeName, TypeAsts } from "./type_name.js";
 
-export const parseStruct = (iter: Iter, meta: MetaAst[], ctx: DiagnosticsContext) => parseWithSpan<StructAst>(iter, () => {
+export const parseStruct = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<StructAst>(iter, () => {
 	iter.expect(Keyword.Struct);
 	const name = parseIdent(iter);
 	iter.expect(Sep.LBrace);
 
 	const properties: StructPropertyAst[] = [];
 
-	while(!iter.nextIf(Sep.RBrace)) {
+	while (!iter.nextIf(Sep.RBrace)) {
 		properties.push(parseProperty(iter, ctx))
 	}
 
@@ -21,53 +23,51 @@ export const parseStruct = (iter: Iter, meta: MetaAst[], ctx: DiagnosticsContext
 
 	return {
 		type: "Struct",
-		meta,
+		attributes,
 		name,
 		properties
 	};
 });
 
 export const parseProperty = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<StructPropertyAst>(iter, () => {
-	const meta: MetaAst[] = [];
-	while(iter.isNext(Op.At)) {
-		meta.push(parseMetaExpr(iter, ctx));
+	const attributes: AttributeAst[] = [];
+
+	while (iter.nextIf(Op.At) !== null) {
+		attributes.push(parseAttribute(iter, ctx));
 	}
-	
+
 	const name = parseIdent(iter);
 	iter.expect(Sep.Colon);
 	const typeName = parseTypeName(iter, ctx);
 
 	return {
-		type: "StructPropertyAst",
-		meta,
+		type: "StructProperty",
+		attributes,
 		name,
 		typeName
 	};
 });
 
-
-export const parseTypeName = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<TypeNameAst>(iter, () => {
+const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst>(iter, () => {
 	const name = parseIdent(iter);
 
 	return {
-		type: "TypeNameAst",
-		name,
+		type: "Attribute",
+		args: parseFunctionArgList(iter, ctx),
+		name
 	};
 });
 
 
+
 export type StructAst = AstType<"Struct", {
-	meta: MetaAst[];
-	name: string;
+	attributes: AttributeAst[];
+	name: IdentAst;
 	properties: StructPropertyAst[];
 }>;
 
-export type StructPropertyAst = AstType<"StructPropertyAst", {
-	meta: MetaAst[];
-	name: string;
-	typeName: TypeNameAst;
-}>;
-
-export type TypeNameAst = AstType<"TypeNameAst", {
-	name: string;
+export type StructPropertyAst = AstType<"StructProperty", {
+	attributes: AttributeAst[];
+	name: IdentAst;
+	typeName: TypeAsts;
 }>;

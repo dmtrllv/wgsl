@@ -17,8 +17,10 @@ struct VertexOutput {
 	@builtin(position) position: vec4f,
 }
 
-@global
-var<uniform> camera: Camera;
+@global {
+	var<uniform> camera: Camera;
+}
 
-@object
-var<uniform> object: Object;
+@object {
+	var<uniform> object: Object;
+}

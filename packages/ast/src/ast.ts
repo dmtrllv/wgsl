@@ -1,25 +1,40 @@
 import { Span } from "@wgsl/core";
 import { ModuleAst } from "./module.js";
 import { ImportAst } from "./import.js";
-import { StructAst, StructPropertyAst, TypeNameAst } from "./struct.js";
-import { MetaAst } from "./meta.js";
+import { StructAst, StructPropertyAst } from "./struct.js";
+import { AttributeAst } from "./attr.js";
+import { FunctionArgAst, FunctionArgListAst, FunctionAst } from "./function.js";
+import { RenderPassAst } from "./pass.js";
+import { IdentAst } from "./ident.js";
+import { StmtScopeAst } from "./scope.js";
+import { GroupBlockAst } from "./group_block.js";
+import { TypeAsts } from "./type_name.js";
 
-export type AstType<Name extends string, Meta extends {} = {}> = {
+export type AstType<Name extends string, Data extends {} = {}> = {
 	readonly type: Name;
 	readonly span: Span;
-} & Meta;
+} & Data;
 
-export type DeclarationAst = StructAst | FunctionAst | VarAst | GroupBlockAst;
+export type Ast =
+	| ModuleAst
+	| DeclarationAsts
+	| TypeAsts
+	| MiscAsts;
 
-export type FunctionAst = AstType<"Function", {}>;
-export type VarAst = AstType<"Var", {}>;
-export type GroupBlockAst = AstType<"GroupBlock", {}>;
-export type RenderPassAst = AstType<"RenderPass", {}>;
+export type DeclarationAsts =
+	| StructAst
+	| FunctionAst
+	| VarAsts
+	| RenderPassAst
+	| GroupBlockAst
+	| ImportAst;
 
-export type Ast = 
-| ModuleAst
-| DeclarationAst 
-| ImportAst
-| MetaAst
-| StructPropertyAst
-| TypeNameAst;
+export type VarAsts = AstType<"Var", {}>;
+
+export type MiscAsts =
+	| IdentAst
+	| StructPropertyAst
+	| AttributeAst
+	| FunctionArgListAst
+	| FunctionArgAst
+	| StmtScopeAst;
