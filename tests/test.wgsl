@@ -59,6 +59,24 @@ import "base";
 		for (; i < 10;) { }
 		for (;; i = i + 1) { }
 		for (;; i = i + 1) { }
+
+		loop {
+		    // if (x >= 10) {
+		        break;
+		    // }
+
+		    x += 1;
+		}
+
+		loop {
+		    x += 1;
+
+		    continuing {
+		        // if (x >= 10) {
+		            // break;
+		        // }
+		    }
+		}
 		
         var output: VertexOutput;
         var worldPosition = object.model * vec4f(input.position, 1.0);

@@ -148,6 +148,21 @@ const parseArrayIndex = (iter: Iter, expr: ExprAst, ctx: DiagnosticsContext) => 
 	}
 });
 
+const ASSIGN_EXPR_TOKENS: readonly TokenType[] = [
+	Op.Assign,
+	Op.AddAssign,
+	Op.SubAssign,
+	Op.DivAssign,
+	Op.MulAssign,
+	Op.ModAssign,
+	Op.ShlAssign,
+	Op.ShrAssign,
+	Op.BitOrAssign,
+	Op.BitAndAssign,
+	Op.BitXorAssign,
+];
+
+export const isAssignOperator = (type: TokenType): type is Op => ASSIGN_EXPR_TOKENS.includes(type);
 
 const EXPR_END_TOKENS: readonly TokenType[] = [
 	Sep.Colon,
@@ -156,12 +171,6 @@ const EXPR_END_TOKENS: readonly TokenType[] = [
 	Sep.RBrace,
 	Sep.RBracket,
 	Sep.RParen,
-	Op.Assign,
-	Op.ShlAssign,
-	Op.ShrAssign,
-	Op.BitOrAssign,
-	Op.BitAndAssign,
-	Op.BitXorAssign,
 ];
 
 const BINARY_PRECEDENCE = new Map<TokenType, number>([
@@ -185,6 +194,8 @@ const BINARY_PRECEDENCE = new Map<TokenType, number>([
 	[Op.Mod, 9],
 	[Op.Dot, 10],
 ]);
+
+ASSIGN_EXPR_TOKENS.forEach(t => BINARY_PRECEDENCE.set(t, 11));
 
 const UNARY_OPERATORS = new Set<Op>([
 	Op.Sub,
