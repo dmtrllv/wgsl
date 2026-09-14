@@ -108,8 +108,66 @@ export const parseSwitchCase = (iter: Iter, ctx: DiagnosticsContext) => parseWit
 	}
 });
 
-export const parseFor = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<ForStmtAst>(iter, () => {
-	throw new Error("TODO!");
+export const parseFor = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<ForStmtAst>(iter, () => {
+	iter.expect(Keyword.For);
+	iter.expect(Sep.LParen);
+
+	let initializer: VarDeclAst | AssignStmtAst | null = null;
+	if (!iter.nextIf(Sep.Semicolon)) {
+		if (iter.isNext(Keyword.Var)) {
+			initializer = parseVarDeclaration(iter, ctx);
+		} else {
+			initializer = parseWithSpan<AssignStmtAst>(iter, () => {
+				const expr = parseExpr(iter, 0, ctx);
+				const op = iter.next();
+				if (op.type.kind !== "Operator")
+					throw new Error("Expected an operator!");
+				return {
+					type: "AssignStmt",
+					left: expr,
+					right: parseExpr(iter, 0, ctx),
+					assignment: op.type
+				};
+			});
+			iter.expect(Sep.Semicolon);
+		}
+	}
+	console.log({ initializer });
+
+	let condition: ExprAst | null = null;
+	const t = iter.nextIf(Sep.Semicolon);
+	if (t === null) {
+		console.log(iter.peek());
+		condition = parseExpr(iter, 0, ctx);
+		iter.expect(Sep.Semicolon);
+	}
+	console.log({ condition });
+
+	let continuing: AssignStmtAst | null = null;
+	if (!iter.nextIf(Sep.RParen)) {
+		continuing = parseWithSpan<AssignStmtAst>(iter, () => {
+			const expr = parseExpr(iter, 0, ctx);
+			const op = iter.next();
+			if (op.type.kind !== "Operator")
+				throw new Error("Expected an operator!");
+			return {
+				type: "AssignStmt",
+				left: expr,
+				right: parseExpr(iter, 0, ctx),
+				assignment: op.type
+			};
+		});
+		iter.expect(Sep.RParen);
+	}
+	let body: StmtScopeAst = parseScope(iter, ctx);
+
+	return {
+		type: "ForStmt",
+		initializer,
+		condition,
+		continuing,
+		body,
+	}
 });
 
 export const parseLoop = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<LoopStmtAst>(iter, () => {
@@ -162,7 +220,10 @@ export type SwitchCaseAst = AstType<"SwitchCase", {
 }>;
 
 export type ForStmtAst = AstType<"ForStmt", {
-	expr: ExprAst;
+	initializer: VarDeclAst | AssignStmtAst | null;
+	condition: ExprAst | null;
+	continuing: AssignStmtAst | null;
+	body: StmtScopeAst;
 }>;
 
 export type LoopStmtAst = AstType<"LoopStmt", {
@@ -172,6 +233,7 @@ export type LoopStmtAst = AstType<"LoopStmt", {
 export type WhileStmtAst = AstType<"WhileStmt", {
 	expr: ExprAst;
 }>;
+
 export type ReturnStmtAst = AstType<"ReturnStmt", {
 	expr: ExprAst;
 }>;

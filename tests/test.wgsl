@@ -43,10 +43,23 @@ import "base";
 			case 2: {
 
 			}
+			case 1, 3: {
+
+			}
+			case 5 + 6: {
+
+			}
 			default: {
 				
 			}
 		}
+
+		for (var i = 0; ; ) { }
+		for (i = 0; ; ) { }
+		for (; i < 10;) { }
+		for (;; i = i + 1) { }
+		for (;; i = i + 1) { }
+		
         var output: VertexOutput;
         var worldPosition = object.model * vec4f(input.position, 1.0);
         output.position = camera.projection * camera.view * worldPosition;

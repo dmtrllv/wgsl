@@ -72,8 +72,8 @@ const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst => {
 				expr
 			};
 		});
-	} else if (token.type.kind === "Separator") {
-		throw new Error("TODO: parse grouped expression " + token.type.sep + " " + JSON.stringify(token.position, null, 4));
+	} if (token.type === Sep.LBracket) {
+		throw new Error("TODO: parse array decl");
 	}
 
 	return parseOperandVal(iter, ctx);
@@ -136,7 +136,7 @@ const parseOperandVal = (iter: Iter, _ctx: DiagnosticsContext): ExprAst => parse
 		}
 
 		default:
-			throw new Error("Expected an operand expression");
+			throw new Error(`Expected an operand expression at ${iter.sourcePath}:${token.position.line}:${token.position.columnOffset}`);
 	}
 });
 
@@ -156,6 +156,12 @@ const EXPR_END_TOKENS: readonly TokenType[] = [
 	Sep.RBrace,
 	Sep.RBracket,
 	Sep.RParen,
+	Op.Assign,
+	Op.ShlAssign,
+	Op.ShrAssign,
+	Op.BitOrAssign,
+	Op.BitAndAssign,
+	Op.BitXorAssign,
 ];
 
 const BINARY_PRECEDENCE = new Map<TokenType, number>([

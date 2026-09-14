@@ -61,8 +61,6 @@ export const Op = {
 	MulEq: op("*="),
 	ModEq: op("%="),
 	Assign: op("="),
-	Inc: op("++"),
-	Dec: op("--"),
 	And: op("&&"),
 	Or: op("||"),
 	Lt: op("<"),
@@ -78,14 +76,14 @@ export const Op = {
 	BitNot: op("~"),
 	At: op("@"),
 	Question: op("?"),
-	BitAndEq: op("&="),
-	BitOrEq: op("|="),
-	BitXorEq: op("^="),
+	BitAndAssign: op("&="),
+	BitOrAssign: op("|="),
+	BitXorAssign: op("^="),
 	Dot: op("."),
 	Shl: op("<<"),
 	Shr: op(">>"),
-	ShlEq: op("<<="),
-	ShrEq: op(">>="),
+	ShlAssign: op("<<="),
+	ShrAssign: op(">>="),
 } as const;
 
 export const token = (type: TokenType, span: Span, position: Position): Token => {
