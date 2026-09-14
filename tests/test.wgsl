@@ -61,9 +61,9 @@ import "base";
 		for (;; i = i + 1) { }
 
 		loop {
-		    // if (x >= 10) {
+		    if (x >= 10) {
 		        break;
-		    // }
+		    }
 
 		    x += 1;
 		}
@@ -72,9 +72,9 @@ import "base";
 		    x += 1;
 
 		    continuing {
-		        // if (x >= 10) {
-		            // break;
-		        // }
+		        if (x >= 10) {
+		            break;
+		        }
 		    }
 		}
 

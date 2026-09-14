@@ -116,16 +116,13 @@ export const parseFor = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<F
 			iter.expect(Sep.Semicolon);
 		}
 	}
-	console.log({ initializer });
 
 	let condition: ExprAst | null = null;
 	const t = iter.nextIf(Sep.Semicolon);
 	if (t === null) {
-		console.log(iter.peek());
 		condition = parseExpr(iter, 0, ctx);
 		iter.expect(Sep.Semicolon);
 	}
-	console.log({ condition });
 
 	let continuing: ExprAst | null = null;
 	if (!iter.nextIf(Sep.RParen)) {
