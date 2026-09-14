@@ -11,6 +11,7 @@ import { GroupBlockAst } from "./group_block.js";
 import { TypeAst } from "./type.js";
 import { ExprAst } from "./expr.js";
 import { StmtAst } from "./stmt.js";
+import { BindingVarDeclAst } from "./binding.js";
 
 export type AstType<Name extends string, Data extends {} = {}> = {
 	readonly type: Name;
@@ -28,12 +29,10 @@ export type Ast =
 export type DeclarationAsts =
 	| StructAst
 	| FunctionAst
-	| VarAsts
+	| BindingVarDeclAst
 	| RenderPassAst
 	| GroupBlockAst
 	| ImportAst;
-
-export type VarAsts = AstType<"Var", {}>;
 
 export type MiscAsts =
 	| IdentAst

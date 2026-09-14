@@ -1,6 +1,6 @@
 import { DiagnosticsContext, DiagnosticSeverity } from "@wgsl/core";
 import { Iter } from "./iter.js";
-import { AstType, DeclarationAsts, VarAsts } from "./ast.js";
+import { AstType } from "./ast.js";
 import { ImportAst, parseImport } from "./import.js";
 import { parseWithSpan } from "./parser.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
@@ -10,10 +10,11 @@ import { FunctionAst, parseFunction, parseFunctionArgList } from "./function.js"
 import { parseRenderPass, RenderPassAst } from "./pass.js";
 import { parseIdent } from "./ident.js";
 import { GroupBlockAst, parseGroupBlock } from "./group_block.js";
+import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
 
 export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
 	const imports: ImportAst[] = [];
-	const declarations: DeclarationAsts[] = [];
+	const declarations: DeclarationAst[] = [];
 
 	while (!iter.ended) {
 		const token = iter.peek();
@@ -30,6 +31,9 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 			case Keyword.Fn:
 				declarations.push(parseFunction(iter, [], ctx));
 				break;
+			case Keyword.Var:
+				declarations.push(parseBindingVar(iter, [], ctx));
+				break;
 			default:
 				const token = iter.next();
 				ctx.add(DiagnosticSeverity.Error, `Invalid token ${token}!`);
@@ -44,7 +48,7 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 	};
 });
 
-const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr>(iter, () => {
+const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr | GroupBlockAst | RenderPassAst>(iter, () => {
 	const attributes: AttributeAst[] = [];
 	while (iter.isNext(Op.At)) {
 		const attr = parseAttribute(iter, ctx);
@@ -62,7 +66,7 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 		case Keyword.Fn:
 			return parseFunction(iter, attributes, ctx);
 		case Keyword.Var:
-			throw new Error("Todo");
+			return parseBindingVar(iter, attributes, ctx);
 		default:
 			console.log(token);
 			throw new Error("Invalidos!");
@@ -97,12 +101,18 @@ const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<At
 
 export type ModuleAst = AstType<"Module", {
 	readonly imports: ImportAst[];
-	readonly declarations: DeclarationAsts[];
+	readonly declarations: DeclarationAst[];
 }>;
 
 type DeclarationWithAttr =
 	| StructAst
 	| FunctionAst
-	| VarAsts
+	| BindingVarDeclAst;
+
+type DeclarationAst =
+	| StructAst
+	| FunctionAst
+	| BindingVarDeclAst
+	| RenderPassAst
 	| GroupBlockAst
-	| RenderPassAst;
+	| ImportAst;

@@ -1,3 +1,3 @@
-import { AstType } from "./ast.js";
+import { VarDeclAst } from "./var.js";
 
-export type StmtAst = AstType<"Stmt", {}>;
+export type StmtAst = VarDeclAst;

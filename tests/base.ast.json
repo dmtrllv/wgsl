@@ -1,0 +1,214 @@
+{
+    "type": "Module",
+    "imports": [],
+    "declarations": [
+        {
+            "type": "Struct",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "Camera"
+            },
+            "properties": [
+                {
+                    "type": "StructProperty",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "view"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "mat4x4f"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "projection"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "mat4x4f"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Struct",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "Object"
+            },
+            "properties": [
+                {
+                    "type": "StructProperty",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "model"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "mat4x4f"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Struct",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "VertexInput"
+            },
+            "properties": [
+                {
+                    "type": "StructProperty",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "position"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "vec3f"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "uv0"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "vec3f"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "normal"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "vec3f"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Struct",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "VertexOutput"
+            },
+            "properties": [
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "Identifier",
+                                        "value": "position"
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "builtin"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "position"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "vec4f"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "GroupBlock",
+            "kind": "global",
+            "declarations": [
+                {
+                    "type": "BindingVar",
+                    "attributes": [],
+                    "addressSpace": "uniform",
+                    "readWrite": null,
+                    "name": {
+                        "type": "Identifier",
+                        "value": "camera"
+                    },
+                    "resourceType": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "Camera"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "GroupBlock",
+            "kind": "object",
+            "declarations": [
+                {
+                    "type": "BindingVar",
+                    "attributes": [],
+                    "addressSpace": "uniform",
+                    "readWrite": null,
+                    "name": {
+                        "type": "Identifier",
+                        "value": "object"
+                    },
+                    "resourceType": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "Object"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
