@@ -165,16 +165,70 @@ export const parseWhile = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpa
 
 export const parseReturn = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<ReturnStmtAst>(iter, () => {
 	iter.expect(Keyword.Return);
-	const expr = parseExpr(iter, 0, ctx);
-	iter.expect(Sep.Semicolon);
+	let expr: ExprAst | null = null;
+	if (!iter.nextIf(Sep.Semicolon)) {
+		expr = parseExpr(iter, 0, ctx);
+		iter.expect(Sep.Semicolon);
+
+	}
 	return {
 		type: "ReturnStmt",
 		expr
 	};
 });
 
-export const parseIfElse = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<IfElseStmtAst>(iter, () => {
-	throw new Error("TODO!");
+export const parseIfElse = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<IfElseStmtAst>(iter, () => {
+	const ifAst = parseWithSpan<IfAst>(iter, () => {
+		iter.expect(Keyword.If);
+		iter.expect(Sep.LParen);
+		const expr = parseExpr(iter, 0, ctx);
+		iter.expect(Sep.RParen);
+		return {
+			type: "If",
+			expr,
+			body: parseScope(iter, ctx),
+		}
+	});
+
+	const elseIfs: ElseIfAst[] = [];
+
+	let elseAst: ElseAst | null = null;
+
+	while (!iter.ended) {
+		if (!iter.isNext(Keyword.Else))
+			break;
+
+		const ifElse = parseWithSpan(iter, () => {
+			iter.expect(Keyword.Else);
+			if (iter.nextIf(Keyword.If)) {
+				iter.expect(Sep.LParen);
+				const expr = parseExpr(iter, 0, ctx);
+				iter.expect(Sep.RParen);
+				return {
+					type: "ElseIf",
+					expr,
+					body: parseScope(iter, ctx)
+				}
+			}
+
+			return {
+				type: "Else",
+				body: parseScope(iter, ctx)
+			}
+		});
+
+		if (ifElse.type === "Else") {
+
+			break;
+		}
+	}
+
+	return {
+		type: "IfElse",
+		if: ifAst,
+		elseIfs,
+		else: elseAst
+	}
 });
 
 export type StmtAst =
@@ -188,7 +242,10 @@ export type StmtAst =
 	| WhileStmtAst
 	| IfElseStmtAst
 	| ContinuingStmtAst
-	| BreakStmtAst;
+	| BreakStmtAst
+	| IfAst
+	| ElseIfAst
+	| ElseAst;
 
 export type ExprStmtAst = AstType<"ExprStmt", {
 	expr: ExprAst;
@@ -227,23 +284,26 @@ export type WhileStmtAst = AstType<"WhileStmt", {
 }>;
 
 export type ReturnStmtAst = AstType<"ReturnStmt", {
-	expr: ExprAst;
+	expr: ExprAst | null;
 }>;
 
-export type IfElseStmtAst = AstType<"ReturnStmt", {
+export type IfElseStmtAst = AstType<"IfElse", {
 	if: IfAst;
 	elseIfs: ElseIfAst[];
-	else: ElseAst[];
+	else: ElseAst | null;
 }>;
 
 export type IfAst = AstType<"If", {
 	expr: ExprAst;
+	body: StmtScopeAst;
 }>;
 
 export type ElseIfAst = AstType<"ElseIf", {
 	expr: ExprAst;
+	body: StmtScopeAst;
 }>;
 
 export type ElseAst = AstType<"Else", {
 	expr: ExprAst;
+	body: StmtScopeAst;
 }>;

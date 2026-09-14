@@ -77,6 +77,24 @@ import "base";
 		        // }
 		    }
 		}
+
+		if (x > 10) {
+    	    if (y > 10) {
+    	        return;
+    	    } else if (y > 5) {
+    	        x += 1;
+    	    } else {
+    	        x -= 1;
+    	    }
+    	} else if (x == 10) {
+    	    x = 0;
+    	} else {
+    	    if (y < 0) {
+    	        return;
+    	    }
+	
+    	    x += 2;
+    	}
 		
         var output: VertexOutput;
         var worldPosition = object.model * vec4f(input.position, 1.0);
