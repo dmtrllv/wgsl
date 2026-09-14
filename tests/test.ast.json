@@ -65,136 +65,145 @@
             ]
         },
         {
-            "type": "Function",
+            "type": "RenderPass",
             "name": {
                 "type": "Identifier",
-                "value": "vertexMain"
+                "value": "Shadow"
             },
-            "attributes": [
+            "declarations": [
                 {
-                    "type": "Attribute",
-                    "args": []
-                }
-            ],
-            "arguments": {
-                "type": "FunctionArgList",
-                "arguments": [
-                    {
-                        "type": "FunctionArg",
-                        "attributes": [],
-                        "name": {
-                            "type": "Identifier",
-                            "value": "input"
-                        },
-                        "typeName": {
-                            "type": "ConcreteType",
-                            "name": {
-                                "type": "Identifier",
-                                "value": "VertexInput"
-                            }
-                        }
-                    }
-                ]
-            },
-            "returnType": {
-                "type": "ConcreteType",
-                "name": {
-                    "type": "Identifier",
-                    "value": "VertexOutput"
-                }
-            },
-            "scope": {
-                "type": "StatementScope",
-                "statements": []
-            }
-        },
-        {
-            "type": "Struct",
-            "attributes": [],
-            "name": {
-                "type": "Identifier",
-                "value": "FragOut"
-            },
-            "properties": [
-                {
-                    "type": "StructProperty",
+                    "type": "Function",
+                    "name": {
+                        "type": "Identifier",
+                        "value": "vertexMain"
+                    },
                     "attributes": [
                         {
                             "type": "Attribute",
-                            "arguments": {
-                                "type": "FunctionArgExprList",
-                                "arguments": [
-                                    {
-                                        "type": "StrLiteral",
-                                        "value": {
-                                            "kind": "StringLiteral"
-                                        }
-                                    }
-                                ]
-                            },
-                            "name": {
-                                "type": "Identifier",
-                                "value": "resource"
-                            }
+                            "args": []
                         }
                     ],
-                    "name": {
-                        "type": "Identifier",
-                        "value": "shadow"
+                    "arguments": {
+                        "type": "FunctionArgList",
+                        "arguments": [
+                            {
+                                "type": "FunctionArg",
+                                "attributes": [],
+                                "name": {
+                                    "type": "Identifier",
+                                    "value": "input"
+                                },
+                                "typeName": {
+                                    "type": "ConcreteType",
+                                    "name": {
+                                        "type": "Identifier",
+                                        "value": "VertexInput"
+                                    }
+                                }
+                            }
+                        ]
                     },
-                    "typeName": {
+                    "returnType": {
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "f32"
+                            "value": "VertexOutput"
                         }
+                    },
+                    "scope": {
+                        "type": "StatementScope",
+                        "statements": []
+                    }
+                },
+                {
+                    "type": "Struct",
+                    "attributes": [],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "FragOut"
+                    },
+                    "properties": [
+                        {
+                            "type": "StructProperty",
+                            "attributes": [
+                                {
+                                    "type": "Attribute",
+                                    "arguments": {
+                                        "type": "FunctionArgExprList",
+                                        "arguments": [
+                                            {
+                                                "type": "StrLiteral",
+                                                "value": {
+                                                    "kind": "StringLiteral"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "name": {
+                                        "type": "Identifier",
+                                        "value": "resource"
+                                    }
+                                }
+                            ],
+                            "name": {
+                                "type": "Identifier",
+                                "value": "shadow"
+                            },
+                            "typeName": {
+                                "type": "ConcreteType",
+                                "name": {
+                                    "type": "Identifier",
+                                    "value": "f32"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "Function",
+                    "name": {
+                        "type": "Identifier",
+                        "value": "fragmentMain"
+                    },
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "args": []
+                        }
+                    ],
+                    "arguments": {
+                        "type": "FunctionArgList",
+                        "arguments": [
+                            {
+                                "type": "FunctionArg",
+                                "attributes": [],
+                                "name": {
+                                    "type": "Identifier",
+                                    "value": "input"
+                                },
+                                "typeName": {
+                                    "type": "ConcreteType",
+                                    "name": {
+                                        "type": "Identifier",
+                                        "value": "VertexOutput"
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "returnType": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "FragOut"
+                        }
+                    },
+                    "scope": {
+                        "type": "StatementScope",
+                        "statements": []
                     }
                 }
             ]
-        },
-        {
-            "type": "Function",
-            "name": {
-                "type": "Identifier",
-                "value": "fragmentMain"
-            },
-            "attributes": [
-                {
-                    "type": "Attribute",
-                    "args": []
-                }
-            ],
-            "arguments": {
-                "type": "FunctionArgList",
-                "arguments": [
-                    {
-                        "type": "FunctionArg",
-                        "attributes": [],
-                        "name": {
-                            "type": "Identifier",
-                            "value": "input"
-                        },
-                        "typeName": {
-                            "type": "ConcreteType",
-                            "name": {
-                                "type": "Identifier",
-                                "value": "VertexOutput"
-                            }
-                        }
-                    }
-                ]
-            },
-            "returnType": {
-                "type": "ConcreteType",
-                "name": {
-                    "type": "Identifier",
-                    "value": "FragOut"
-                }
-            },
-            "scope": {
-                "type": "StatementScope",
-                "statements": []
-            }
         },
         {
             "type": "RenderPass",

@@ -1,5 +1,5 @@
 import { DiagnosticError, DiagnosticsContext, DiagnosticSeverity, span } from "@wgsl/core";
-import { Token, TokenType, tokenTypeToString, Whitespace } from "@wgsl/lexer";
+import { Comment, Token, TokenType, tokenTypeToString, Whitespace } from "@wgsl/lexer";
 
 export class Iter {
 	public readonly sourcePath: string;
@@ -15,7 +15,7 @@ export class Iter {
 	}
 
 	public get ended(): boolean {
-		this.skipWhitespace();
+		this.skipUnwanted();
 		return this._nextPtr >= this._tokens.length;
 	}
 
@@ -26,14 +26,14 @@ export class Iter {
 		this._ctx = ctx;
 	}
 
-	private skipWhitespace() {
-		while (this._tokens[this._nextPtr]?.type === Whitespace) {
+	private skipUnwanted() {
+		while (this._tokens[this._nextPtr]?.type === Whitespace || this._tokens[this._nextPtr]?.type === Comment) {
 			this._nextPtr++;
 		}
 	}
 
 	public skip() {
-		this.skipWhitespace();
+		this.skipUnwanted();
 		this._nextPtr++;
 	}
 

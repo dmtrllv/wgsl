@@ -36,7 +36,8 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 				break;
 			default:
 				const token = iter.next();
-				ctx.add(DiagnosticSeverity.Error, `Invalid token ${token}!`);
+				const source = iter.getSource(token);
+				ctx.add(DiagnosticSeverity.Error, `Invalid token ${token.type.kind} ${source} at ${iter.sourcePath}:${token.position.line}:${token.position.columnOffset}!`);
 				break;
 		}
 	}

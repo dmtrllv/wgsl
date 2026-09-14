@@ -112,9 +112,13 @@ export class DiagnosticsContext {
 			if (d instanceof DiagnosticError) {
 				console.log(d.stack);
 			} else {
-				//	//console.log(d.severity + ':', d.message);
+				console.log(d.severity + ':', d.message);
 			}
 		});
+	}
+
+	public hasErrors(): boolean {
+		return !!this.diagnostics.find(d => d.severity === DiagnosticSeverity.Error);
 	}
 }
 

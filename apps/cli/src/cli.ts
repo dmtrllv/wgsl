@@ -15,7 +15,7 @@ const ctx = new DiagnosticsContext();
 const ast = await compiler.getAst("test.wgsl", ctx);
 //const ast = await compiler.getTokens("test.wgsl", ctx);
 
-if(!isDiagnosticError(ast)) {
+if(!isDiagnosticError(ast) && !ctx.hasErrors()) {
 	const json = JSON.stringify(ast, (k, v) => k === "span" ? undefined : v, 4);
 	console.log(json);
 	writeFileSync("test.ast.json", json, "utf-8");
