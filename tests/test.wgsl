@@ -39,6 +39,14 @@ import "base";
 
     @vertex
     fn vertexMain(input: VertexInput) -> VertexOutput {
+		switch(1) {
+			case 2: {
+
+			}
+			default: {
+				
+			}
+		}
         var output: VertexOutput;
         var worldPosition = object.model * vec4f(input.position, 1.0);
         output.position = camera.projection * camera.view * worldPosition;
