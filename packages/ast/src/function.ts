@@ -4,7 +4,7 @@ import { AttributeAst } from "./attr.js";
 import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
 import { IdentAst, parseIdent } from "./ident.js";
-import { Keyword, Sep } from "@wgsl/lexer";
+import { Keyword, Op, Sep } from "@wgsl/lexer";
 import { parseScope } from "./scope.js";
 import { parseType, TypeAst } from "./type.js";
 import { ExprAst, parseExpr } from "./expr.js";
@@ -12,11 +12,16 @@ import { ExprAst, parseExpr } from "./expr.js";
 export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<FunctionAst>(iter, () => {
 	iter.expect(Keyword.Fn);
 	const name = parseIdent(iter);
+	const args = parseFunctionArgList(iter, ctx);
+	iter.expect(Op.Sub);
+	iter.expect(Op.Gt);
+	const returnType = parseType(iter, ctx);
 	return {
 		type: "Function",
 		name,
 		attributes,
-		arguments: parseFunctionArgList(iter, ctx),
+		arguments: args,
+		returnType,
 		scope: parseScope(iter, ctx)
 	};
 });
@@ -72,17 +77,13 @@ export const parseFunctionArgExprList = (iter: Iter, ctx: DiagnosticsContext) =>
 	}
 });
 
-export const parseFunctionCall = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<FunctionCallAst>(iter, () => {
-	const name = parseIdent(iter);
-
-	const args: ExprAst[] = [];
-
+export const parseFunctionCall = (iter: Iter, expr: ExprAst, ctx: DiagnosticsContext) => parseWithSpan<FunctionCallAst>(iter, () => {
 	return {
 		type: "FunctionCall",
-		name,
-		arguments: args
+		expr,
+		arguments: parseFunctionArgExprList(iter, ctx)
 	}
-})
+});
 
 export type FunctionAst = AstType<"Function", {
 	name: IdentAst,
@@ -91,19 +92,19 @@ export type FunctionAst = AstType<"Function", {
 }>;
 
 export type FunctionArgListAst = AstType<"FunctionArgList", {
-	arguments: FunctionArgAst[];
+	arguments: FunctionArgAst[],
 }>;
 
 export type FunctionArgAst = AstType<"FunctionArg", {
-	name: IdentAst;
-	typeName: TypeAst;
+	name: IdentAst,
+	typeName: TypeAst,
 }>;
 
 export type FunctionArgExprListAst = AstType<"FunctionArgExprList", {
-	arguments: ExprAst[];
+	arguments: ExprAst[],
 }>;
 
 export type FunctionCallAst = AstType<"FunctionCall", {
-	name: IdentAst,
-	arguments: ExprAst[];
-}>
+	expr: ExprAst,
+	arguments: FunctionArgExprListAst,
+}>;

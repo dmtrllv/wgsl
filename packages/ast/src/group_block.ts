@@ -6,7 +6,7 @@ import { DiagnosticsContext } from "@wgsl/core";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
 import { AttributeAst } from "./attr.js";
 
-export const parseGroupBlock = (iter: Iter, kind: GroupBlockKind, ctx: DiagnosticsContext) => parseWithSpan<GroupBlockAst>(iter, () => {
+export const parseBindingGroup = (iter: Iter, kind: BindingGroupKind, ctx: DiagnosticsContext) => parseWithSpan<BindingGroupAst>(iter, () => {
 	iter.expect(Sep.LBrace);
 
 	const declarations: BindingVarDeclAst[] = [];
@@ -20,7 +20,7 @@ export const parseGroupBlock = (iter: Iter, kind: GroupBlockKind, ctx: Diagnosti
 	}
 
 	return {
-		type: "GroupBlock",
+		type: "BindingGroup",
 		kind,
 		declarations,
 	};
@@ -32,12 +32,13 @@ const parseAttributes = (_iter: Iter, _ctx: DiagnosticsContext) => {
 	return attributes;
 };
 
-export type GroupBlockAst = AstType<"GroupBlock", {
-	kind: GroupBlockKind;
+export type BindingGroupAst = AstType<"BindingGroup", {
+	kind: BindingGroupKind;
 	declarations: BindingVarDeclAst[];
 }>;
 
-type GroupBlockKind =
+type BindingGroupKind =
 	| "material"
 	| "global"
-	| "object";
+	| "object"
+	| "resource";

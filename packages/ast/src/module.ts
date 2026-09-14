@@ -9,7 +9,7 @@ import { parseStruct, StructAst } from "./struct.js";
 import { FunctionAst, parseFunction, parseFunctionArgList } from "./function.js";
 import { parseRenderPass, RenderPassAst } from "./pass.js";
 import { parseIdent } from "./ident.js";
-import { GroupBlockAst, parseGroupBlock } from "./group_block.js";
+import { BindingGroupAst, parseBindingGroup } from "./group_block.js";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
 
 export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
@@ -48,7 +48,7 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 	};
 });
 
-const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr | GroupBlockAst | RenderPassAst>(iter, () => {
+const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr | BindingGroupAst | RenderPassAst>(iter, () => {
 	const attributes: AttributeAst[] = [];
 	while (iter.isNext(Op.At)) {
 		const attr = parseAttribute(iter, ctx);
@@ -73,14 +73,14 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 	}
 });
 
-const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst | GroupBlockAst | RenderPassAst>(iter, () => {
+const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst | BindingGroupAst | RenderPassAst>(iter, () => {
 	iter.expect(Op.At);
 	const ident = parseIdent(iter);
 	switch (ident.value) {
 		case "object":
 		case "material":
 		case "global":
-			return parseGroupBlock(iter, ident.value, ctx);
+			return parseBindingGroup(iter, ident.value, ctx);
 		case "pass":
 			return parseRenderPass(iter, ctx);
 		default:
@@ -114,5 +114,5 @@ type DeclarationAst =
 	| FunctionAst
 	| BindingVarDeclAst
 	| RenderPassAst
-	| GroupBlockAst
+	| BindingGroupAst
 	| ImportAst;

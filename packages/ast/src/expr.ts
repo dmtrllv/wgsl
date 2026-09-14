@@ -1,5 +1,5 @@
 import { DiagnosticsContext } from "@wgsl/core";
-import { FunctionCallAst } from "./function.js";
+import { FunctionCallAst, parseFunctionCall } from "./function.js";
 import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
 import { CharLiteral, Op, Sep, StrLiteral, Token, TokenType } from "@wgsl/lexer";
@@ -15,31 +15,36 @@ export const parseExpr = (iter: Iter, minPrecedence: number, ctx: DiagnosticsCon
 		if (isExprEnd(token))
 			break;
 
-		if (token.type.kind !== "Operator")
+		if (token.type === Sep.LParen) {
+			expr = parseFunctionCall(iter, expr, ctx);
+		} else if (token.type === Sep.LBracket) {
+			expr = parseArrayIndex(iter, expr, ctx);
+		} else if (token.type.kind !== "Operator") {
 			break;
+		} else {
+			const precedence = BINARY_PRECEDENCE.get(token.type);
 
-		const precedence = BINARY_PRECEDENCE.get(token.type);
+			if (precedence === undefined || precedence < minPrecedence)
+				break;
 
-		if (precedence === undefined || precedence < minPrecedence)
-			break;
+			const left = expr;
 
-		const left = expr;
+			expr = parseWithSpan<BinaryOpAst>(iter, () => {
+				const op = iter.next();
 
-		expr = parseWithSpan<BinaryOpAst>(iter, () => {
-			const op = iter.next();
+				if (op.type.kind !== "Operator")
+					throw new Error("Expected binary operator");
 
-			if (op.type.kind !== "Operator")
-				throw new Error("Expected binary operator");
+				const right = parseExpr(iter, precedence + 1, ctx);
 
-			const right = parseExpr(iter, precedence + 1, ctx);
-
-			return {
-				type: "BinaryOp",
-				left,
-				op: op.type,
-				right,
-			};
-		});
+				return {
+					type: "BinaryOp",
+					left,
+					op: op.type,
+					right,
+				};
+			});
+		}
 	}
 
 	return expr;
@@ -57,8 +62,18 @@ const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst => {
 		return parseUnary(iter, ctx);
 	}
 
-	if (token.type.kind === "Separator") {
-		throw new Error("TODO: parse grouped expression");
+	if (token.type === Sep.LParen) {
+		return parseWithSpan<ExprGroupAst>(iter, () => {
+			iter.expect(Sep.LParen);
+			const expr = parseExpr(iter, 0, ctx);
+			iter.expect(Sep.RParen);
+			return {
+				type: "ExprGroup",
+				expr
+			};
+		});
+	} else if (token.type.kind === "Separator") {
+		throw new Error("TODO: parse grouped expression " + token.type.sep + " " + JSON.stringify(token.position, null, 4));
 	}
 
 	return parseOperandVal(iter, ctx);
@@ -125,6 +140,15 @@ const parseOperandVal = (iter: Iter, _ctx: DiagnosticsContext): ExprAst => parse
 	}
 });
 
+const parseArrayIndex = (iter: Iter, expr: ExprAst, ctx: DiagnosticsContext) => parseWithSpan<ArrayIndexAst>(iter, () => {
+	return {
+		type: "ArrayIndex",
+		expr,
+		index: parseExpr(iter, 0, ctx)
+	}
+});
+
+
 const EXPR_END_TOKENS: readonly TokenType[] = [
 	Sep.Colon,
 	Sep.Comma,
@@ -153,6 +177,7 @@ const BINARY_PRECEDENCE = new Map<TokenType, number>([
 	[Op.Mul, 9],
 	[Op.Div, 9],
 	[Op.Mod, 9],
+	[Op.Dot, 10],
 ]);
 
 const UNARY_OPERATORS = new Set<Op>([
@@ -169,7 +194,9 @@ export type ExprAst =
 	| CharLiteralAst
 	| NumberLiteralAst
 	| BoolLiteralAst
-	| BinaryOpAst;
+	| BinaryOpAst
+	| ArrayIndexAst
+	| ExprGroupAst;
 
 export type StrLiteralAst = AstType<"StrLiteral", {
 	value: StrLiteral;
@@ -196,4 +223,14 @@ export type BinaryOpAst = AstType<"BinaryOp", {
 export type UnaryOpAst = AstType<"UnaryOp", {
 	op: Op;
 	expr: ExprAst;
+}>;
+
+export type ArrayIndexAst = AstType<"ArrayIndex", {
+	expr: ExprAst,
+	index: ExprAst,
+}>;
+
+
+export type ExprGroupAst = AstType<"ExprGroup", {
+	expr: ExprAst,
 }>;

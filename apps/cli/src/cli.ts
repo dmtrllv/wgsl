@@ -13,6 +13,7 @@ const compiler = new Compiler(rootDir);
 const ctx = new DiagnosticsContext();
 
 const ast = await compiler.getAst("test.wgsl", ctx);
+//const ast = await compiler.getTokens("test.wgsl", ctx);
 
 if(!isDiagnosticError(ast)) {
 	const json = JSON.stringify(ast, (k, v) => k === "span" ? undefined : v, 4);

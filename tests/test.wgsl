@@ -6,7 +6,7 @@ import "base";
 	var<uniform> metallic: vec4f;
 }
 
-pass Shadow {
+pass(Shadow) {
     @vertex
     fn vertexMain(input: VertexInput) -> VertexOutput {
         var output: VertexOutput;

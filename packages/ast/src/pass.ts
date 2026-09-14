@@ -7,7 +7,7 @@ import { parseStruct, StructAst } from "./struct.js";
 import { FunctionAst, parseFunction, parseFunctionArgList } from "./function.js";
 import { DiagnosticsContext, DiagnosticSeverity } from "@wgsl/core";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
-import { GroupBlockAst, parseGroupBlock } from "./group_block.js";
+import { BindingGroupAst, parseBindingGroup } from "./group_block.js";
 import { AttributeAst } from "./attr.js";
 
 export const parseRenderPass = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<RenderPassAst>(iter, () => {
@@ -18,7 +18,7 @@ export const parseRenderPass = (iter: Iter, ctx: DiagnosticsContext) => parseWit
 
 	const declarations: DeclarationAst[] = [];
 
-	while (!iter.ended) {
+	while (!iter.ended && !iter.nextIf(Sep.RBrace)) {
 		const token = iter.peek();
 		switch (token.type) {
 			case Op.At:
@@ -40,8 +40,6 @@ export const parseRenderPass = (iter: Iter, ctx: DiagnosticsContext) => parseWit
 		}
 	}
 
-	iter.expect(Sep.RBrace);
-
 	return {
 		type: "RenderPass",
 		name,
@@ -50,7 +48,7 @@ export const parseRenderPass = (iter: Iter, ctx: DiagnosticsContext) => parseWit
 });
 
 
-const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr | GroupBlockAst>(iter, () => {
+const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<DeclarationWithAttr | BindingGroupAst>(iter, () => {
 	const attributes: AttributeAst[] = [];
 	while (iter.isNext(Op.At)) {
 		const attr = parseAttribute(iter, ctx);
@@ -70,19 +68,19 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 		case Keyword.Var:
 			return parseBindingVar(iter, attributes, ctx);
 		default:
-			console.log(token);
 			throw new Error("Invalidos!");
 	}
 });
 
-const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst | GroupBlockAst>(iter, () => {
+const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst | BindingGroupAst>(iter, () => {
 	iter.expect(Op.At);
 	const ident = parseIdent(iter);
 	switch (ident.value) {
 		case "object":
 		case "material":
 		case "global":
-			return parseGroupBlock(iter, ident.value, ctx);
+		case "resource":
+			return parseBindingGroup(iter, ident.value, ctx);
 		default:
 			if (iter.isNext(Sep.LParen)) {
 				return {
@@ -104,6 +102,6 @@ export type RenderPassAst = AstType<"RenderPass", {
 	declarations: DeclarationAst[]
 }>;
 
-type DeclarationAst = StructAst | FunctionAst | BindingVarDeclAst | GroupBlockAst;
+type DeclarationAst = StructAst | FunctionAst | BindingVarDeclAst | BindingGroupAst;
 
 type DeclarationWithAttr = StructAst | FunctionAst | BindingVarDeclAst;

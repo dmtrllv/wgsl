@@ -7,7 +7,7 @@ import { FunctionArgAst, FunctionArgExprListAst, FunctionArgListAst, FunctionAst
 import { RenderPassAst } from "./pass.js";
 import { IdentAst } from "./ident.js";
 import { StmtScopeAst } from "./scope.js";
-import { GroupBlockAst } from "./group_block.js";
+import { BindingGroupAst } from "./group_block.js";
 import { TypeAst } from "./type.js";
 import { ExprAst } from "./expr.js";
 import { StmtAst } from "./stmt.js";
@@ -31,7 +31,7 @@ export type DeclarationAsts =
 	| FunctionAst
 	| BindingVarDeclAst
 	| RenderPassAst
-	| GroupBlockAst
+	| BindingGroupAst
 	| ImportAst;
 
 export type MiscAsts =

@@ -79,7 +79,7 @@ const parseNumberLiteral = (iter: Iter, cursor: Position): Token => {
 	let str = iter.next();
 	let gotPoint = false;
 	str += iter.collectWhile(c => {
-		if (/0-9/.test(c))
+		if (/[0-9]/.test(c))
 			return true;
 		if (c === '.') {
 			if (gotPoint)
