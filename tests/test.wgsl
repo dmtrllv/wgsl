@@ -95,6 +95,26 @@ import "base";
 	
     	    x += 2;
     	}
+
+		loop {
+    	    if (value < 0.0) {
+    	        continue;
+    	    }
+
+    	    if (value > 100.0) {
+    	        discard;
+    	    }
+
+    	    process(value);
+
+    	    continuing {
+    	        value += 1.0;
+				
+    	        if (value >= 200.0) {
+    	            break;
+    	        }
+    	    }
+    	}
 		
         var output: VertexOutput;
         var worldPosition = object.model * vec4f(input.position, 1.0);

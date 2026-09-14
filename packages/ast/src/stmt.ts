@@ -23,14 +23,16 @@ export const parseStatement = (iter: Iter, ctx: DiagnosticsContext) => parseWith
 			return parseLoop(iter, ctx);
 		case Keyword.Continuing:
 			return parseContinuing(iter, ctx);
-		case Keyword.While:
-			return parseWhile(iter, ctx);
 		case Keyword.Return:
 			return parseReturn(iter, ctx);
 		case Keyword.Break:
 			return parseBreak(iter, ctx);
 		case Keyword.If:
 			return parseIfElse(iter, ctx);
+		case Keyword.Continue:
+			return parseContinue(iter, ctx);
+		case Keyword.Discard:
+			return parseDiscard(iter, ctx);
 
 		default:
 			const expr = parseExpr(iter, 0, ctx);
@@ -82,6 +84,23 @@ export const parseBreak = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpa
 	iter.expect(Sep.Semicolon);
 	return {
 		type: "BreakStmt"
+	};
+});
+
+
+export const parseContinue = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<ContinueStmtAst>(iter, () => {
+	iter.expect(Keyword.Continue);
+	iter.expect(Sep.Semicolon);
+	return {
+		type: "ContinueStmt"
+	};
+});
+
+export const parseDiscard = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<DiscardStmtAst>(iter, () => {
+	iter.expect(Keyword.Discard);
+	iter.expect(Sep.Semicolon);
+	return {
+		type: "DiscardStmt"
 	};
 });
 
@@ -154,10 +173,6 @@ export const parseContinuing = (iter: Iter, ctx: DiagnosticsContext) => parseWit
 		type: "ContinuingStmt",
 		body: parseScope(iter, ctx)
 	};
-});
-
-export const parseWhile = (iter: Iter, _ctx: DiagnosticsContext) => parseWithSpan<WhileStmtAst>(iter, () => {
-	throw new Error("TODO!");
 });
 
 export const parseReturn = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<ReturnStmtAst>(iter, () => {
@@ -236,9 +251,10 @@ export type StmtAst =
 	| SwitchCaseAst
 	| ForStmtAst
 	| LoopStmtAst
-	| WhileStmtAst
 	| IfElseStmtAst
 	| ContinuingStmtAst
+	| ContinueStmtAst
+	| DiscardStmtAst
 	| BreakStmtAst
 	| IfAst
 	| ElseIfAst
@@ -276,10 +292,6 @@ export type ContinuingStmtAst = AstType<"ContinuingStmt", {
 	body: StmtScopeAst
 }>;
 
-export type WhileStmtAst = AstType<"WhileStmt", {
-	expr: ExprAst;
-}>;
-
 export type ReturnStmtAst = AstType<"ReturnStmt", {
 	expr: ExprAst | null;
 }>;
@@ -304,3 +316,6 @@ export type ElseAst = AstType<"Else", {
 	expr: ExprAst;
 	body: StmtScopeAst;
 }>;
+
+export type ContinueStmtAst = AstType<"ContinueStmt">;
+export type DiscardStmtAst = AstType<"DiscardStmt">;
