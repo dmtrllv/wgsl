@@ -1,10 +1,11 @@
 import { DiagnosticsContext } from "@wgsl/core";
-import { FunctionCallAst, parseFunctionCall } from "./function.js";
+import { FunctionArgExprListAst, FunctionCallAst, parseFunctionArgExprList, parseFunctionCall } from "./function.js";
 import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
-import { CharLiteral, Op, Sep, StrLiteral, Token, TokenType } from "@wgsl/lexer";
+import { CharLiteral, Keyword, Op, Sep, StrLiteral, Token, TokenType } from "@wgsl/lexer";
 import { AstType } from "./ast.js";
 import { IdentAst } from "./ident.js";
+import { parseType, TypeAst } from "./type.js";
 
 export const parseExpr = (iter: Iter, minPrecedence: number, ctx: DiagnosticsContext): ExprAst => parseWithSpan<ExprAst>(iter, () => {
 	let expr = parseOperand(iter, ctx);
@@ -95,11 +96,43 @@ const parseUnary = (iter: Iter, ctx: DiagnosticsContext): UnaryOpAst => parseWit
 	};
 });
 
-const parseOperandVal = (iter: Iter, _ctx: DiagnosticsContext): ExprAst => parseWithSpan<ExprAst>(iter, () => {
+const parseOperandVal = (iter: Iter, ctx: DiagnosticsContext): ExprAst => parseWithSpan<ExprAst>(iter, () => {
 	const token = iter.next();
+
+	if (token.type === Keyword.Bitcast) {
+		iter.expect(Op.Lt);
+		const typeName = parseType(iter, ctx);
+		iter.expect(Op.Gt);
+		return {
+			type: "Bitcast",
+			typeName,
+			arguments: parseFunctionArgExprList(iter, ctx)
+		}
+	}
 
 	switch (token.type.kind) {
 		case "Identifier":
+			if (GENERIC_CONSTRUCTORS.includes(token.type.ident)) {
+				const generics: TypeAst[] = [];
+
+				iter.expect(Op.Lt);
+
+				while (!iter.ended) {
+					generics.push(parseType(iter, ctx));
+
+					if (iter.nextIf(Op.Gt))
+						break;
+
+					iter.expect(Sep.Comma);
+				}
+
+				return {
+					type: "GenericCall",
+					name: token.type.ident,
+					generics,
+					arguments: parseFunctionArgExprList(iter, ctx)
+				}
+			}
 			return {
 				type: "Identifier",
 				value: token.type.ident,
@@ -164,6 +197,22 @@ const ASSIGN_EXPR_TOKENS: readonly TokenType[] = [
 
 export const isAssignOperator = (type: TokenType): type is Op => ASSIGN_EXPR_TOKENS.includes(type);
 
+const GENERIC_CONSTRUCTORS: readonly string[] = [
+	"array",
+	"vec2",
+	"vec3",
+	"vec4",
+	"mat2x2",
+	"mat2x3",
+	"mat2x4",
+	"mat3x2",
+	"mat3x3",
+	"mat3x4",
+	"mat4x2",
+	"mat4x3",
+	"mat4x4",
+];
+
 const EXPR_END_TOKENS: readonly TokenType[] = [
 	Sep.Colon,
 	Sep.Comma,
@@ -213,7 +262,14 @@ export type ExprAst =
 	| BoolLiteralAst
 	| BinaryOpAst
 	| ArrayIndexAst
-	| ExprGroupAst;
+	| ExprGroupAst
+	| BitcastAst
+	| GenericCallExprAst;
+
+export type BitcastAst = AstType<"Bitcast", {
+	typeName: TypeAst,
+	arguments: FunctionArgExprListAst,
+}>
 
 export type StrLiteralAst = AstType<"StrLiteral", {
 	value: StrLiteral;
@@ -247,7 +303,12 @@ export type ArrayIndexAst = AstType<"ArrayIndex", {
 	index: ExprAst,
 }>;
 
-
 export type ExprGroupAst = AstType<"ExprGroup", {
 	expr: ExprAst,
 }>;
+
+export type GenericCallExprAst = AstType<"GenericCall", {
+	name: string,
+	generics: TypeAst[],
+	arguments: FunctionArgExprListAst,
+}>

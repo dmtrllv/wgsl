@@ -11,6 +11,7 @@ import { parseRenderPass, RenderPassAst } from "./pass.js";
 import { parseIdent } from "./ident.js";
 import { BindingGroupAst, parseBindingGroup } from "./group_block.js";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
+import { ConstDeclAst, parseConstDeclaration } from "./var.js";
 
 export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
 	const imports: ImportAst[] = [];
@@ -21,6 +22,9 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 		switch (token.type) {
 			case Keyword.Import:
 				imports.push(parseImport(iter));
+				break;
+			case Keyword.Const:
+				declarations.push(parseConstDeclaration(iter, [], ctx));
 				break;
 			case Op.At:
 				declarations.push(parseAttributed(iter, ctx));
@@ -62,6 +66,8 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 
 	const token = iter.peek();
 	switch (token.type) {
+		case Keyword.Const:
+			return parseConstDeclaration(iter, attributes, ctx);
 		case Keyword.Struct:
 			return parseStruct(iter, attributes, ctx);
 		case Keyword.Fn:
@@ -108,7 +114,8 @@ export type ModuleAst = AstType<"Module", {
 type DeclarationWithAttr =
 	| StructAst
 	| FunctionAst
-	| BindingVarDeclAst;
+	| BindingVarDeclAst
+	| ConstDeclAst;
 
 type DeclarationAst =
 	| StructAst
@@ -116,4 +123,5 @@ type DeclarationAst =
 	| BindingVarDeclAst
 	| RenderPassAst
 	| BindingGroupAst
-	| ImportAst;
+	| ImportAst
+	| ConstDeclAst;

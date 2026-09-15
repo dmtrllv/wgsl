@@ -1,7 +1,7 @@
 import { DiagnosticsContext, DiagnosticSeverity } from "@wgsl/core";
 import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
-import { parseVarDeclaration, VarDeclAst } from "./var.js";
+import { ConstDeclAst, LetDeclAst, parseConstDeclaration, parseLetDeclaration, parseVarDeclaration, VarDeclAst } from "./var.js";
 import { Keyword, Sep } from "@wgsl/lexer";
 import { AstType } from "./ast.js";
 import { ExprAst, parseExpr } from "./expr.js";
@@ -12,9 +12,11 @@ export const parseStatement = (iter: Iter, ctx: DiagnosticsContext) => parseWith
 
 	switch (token.type) {
 		case Keyword.Var:
-		case Keyword.Let:
-		case Keyword.Const:
 			return parseVarDeclaration(iter, ctx);
+		case Keyword.Let:
+			return parseLetDeclaration(iter, ctx);
+		case Keyword.Const:
+			return parseConstDeclaration(iter, [], ctx);
 		case Keyword.Switch:
 			return parseSwitch(iter, ctx);
 		case Keyword.For:
@@ -245,6 +247,8 @@ export const parseIfElse = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpa
 
 export type StmtAst =
 	| VarDeclAst
+	| LetDeclAst
+	| ConstDeclAst
 	| ExprStmtAst
 	| ReturnStmtAst
 	| SwitchStmtAst
