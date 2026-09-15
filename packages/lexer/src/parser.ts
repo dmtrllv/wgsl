@@ -77,20 +77,26 @@ const parseOp = (iter: Iter, cursor: Position): Token => {
 
 const parseNumberLiteral = (iter: Iter, cursor: Position): Token => {
 	let str = iter.next();
-	let gotPoint = false;
-	str += iter.collectWhile(c => {
-		if (/[0-9]/.test(c))
-			return true;
-		if (c === '.') {
-			if (gotPoint)
-				return false;
 
-			gotPoint = true;
-			return true;
-		}
+	const hex = str === "0" && iter.peek() === "x";
+	const digit = hex ? /[0-9a-fA-F_]/ : /[0-9_]/;
 
-		return false;
-	});
+	str += iter.collectWhile(c => digit.test(c));
+
+	if (iter.peek() === ".") {
+		str += iter.next();
+		str += iter.collectWhile(c => digit.test(c));
+	}
+
+	const exp = hex ? /[pP]/ : /[eE]/;
+	if (exp.test(iter.peek())) {
+		str += iter.next();
+		if (/[+-]/.test(iter.peek())) str += iter.next();
+		str += iter.collectWhile(c => /[0-9_]/.test(c));
+	}
+
+	if (/[iu fh]/.test(iter.peek()))
+		str += iter.next();
 
 	return createToken(NumberLiteral, str, cursor);
 };

@@ -3,10 +3,21 @@ import { AstType } from "./ast.js";
 import { IdentAst, parseIdent } from "./ident.js";
 import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
-import { Op, Sep } from "@wgsl/lexer";
+import { Keyword, Op, Sep } from "@wgsl/lexer";
 
 export const parseType = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<TypeAst>(iter, () => {
-	const name = parseIdent(iter);
+	let name: IdentAst;
+	if (iter.isNext(Keyword.Array) !== null) {
+		name = parseWithSpan(iter, () => {
+			iter.skip();
+			return {
+				type: "Identifier",
+				value: "array"
+			}
+		});
+	} else {
+		name = parseIdent(iter);
+	}
 
 	if (iter.nextIf(Op.Lt)) {
 		let generics: TypeAst[] = [];

@@ -12,6 +12,7 @@ import { TypeAst } from "./type.js";
 import { ExprAst } from "./expr.js";
 import { StmtAst } from "./stmt.js";
 import { BindingVarDeclAst } from "./binding.js";
+import { ConstDeclAst, LetDeclAst, OverrideDeclAst, VarDeclAst } from "./var.js";
 
 export type AstType<Name extends string, Data extends {} = {}> = {
 	readonly type: Name;
@@ -32,7 +33,11 @@ export type DeclarationAsts =
 	| BindingVarDeclAst
 	| RenderPassAst
 	| BindingGroupAst
-	| ImportAst;
+	| ImportAst
+	| VarDeclAst
+	| LetDeclAst
+	| ConstDeclAst 
+	| OverrideDeclAst;
 
 export type MiscAsts =
 	| IdentAst

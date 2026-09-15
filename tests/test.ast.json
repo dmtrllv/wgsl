@@ -24,7 +24,7 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "vec4f"
+                            "value": "array"
                         }
                     }
                 },
@@ -41,7 +41,7 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "vec4f"
+                            "value": "array"
                         }
                     }
                 },
@@ -58,11 +58,697 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "vec4f"
+                            "value": "array"
+                        }
+                    }
+                },
+                {
+                    "type": "BindingVar",
+                    "attributes": [],
+                    "addressSpace": "uniform",
+                    "readWrite": null,
+                    "name": {
+                        "type": "Identifier",
+                        "value": "tiling"
+                    },
+                    "resourceType": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
                         }
                     }
                 }
             ]
+        },
+        {
+            "type": "Struct",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "VertexInput"
+            },
+            "properties": [
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "NumberLiteral",
+                                        "value": 0
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "location"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "position"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "NumberLiteral",
+                                        "value": 1
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "location"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "normal"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "NumberLiteral",
+                                        "value": 2
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "location"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "uv"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Struct",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "VertexOutput"
+            },
+            "properties": [
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "Identifier",
+                                        "value": "position"
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "builtin"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "position"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "NumberLiteral",
+                                        "value": 0
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "location"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "normal"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
+                        }
+                    }
+                },
+                {
+                    "type": "StructProperty",
+                    "attributes": [
+                        {
+                            "type": "Attribute",
+                            "arguments": {
+                                "type": "FunctionArgExprList",
+                                "arguments": [
+                                    {
+                                        "type": "NumberLiteral",
+                                        "value": 1
+                                    }
+                                ]
+                            },
+                            "name": {
+                                "type": "Identifier",
+                                "value": "location"
+                            }
+                        }
+                    ],
+                    "name": {
+                        "type": "Identifier",
+                        "value": "uv"
+                    },
+                    "typeName": {
+                        "type": "ConcreteType",
+                        "name": {
+                            "type": "Identifier",
+                            "value": "array"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "ConstDecl",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "PI"
+            },
+            "typeName": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "expr": {
+                "type": "NumberLiteral",
+                "value": 3.14159265
+            }
+        },
+        {
+            "type": "ConstDecl",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "MAX_LIGHTS"
+            },
+            "typeName": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "expr": {
+                "type": "NumberLiteral",
+                "value": 8
+            }
+        },
+        {
+            "type": "ConstDecl",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "ENABLE_SHADOWS"
+            },
+            "typeName": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "expr": {
+                "type": "Identifier",
+                "value": "true"
+            }
+        },
+        {
+            "type": "OverrideDecl",
+            "attributes": [],
+            "name": {
+                "type": "Identifier",
+                "value": "MSAA_SAMPLES"
+            },
+            "typeName": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "expr": {
+                "type": "NumberLiteral",
+                "value": 4
+            }
+        },
+        {
+            "type": "BindingVar",
+            "attributes": [],
+            "addressSpace": "private",
+            "readWrite": null,
+            "name": {
+                "type": "Identifier",
+                "value": "frameCount"
+            },
+            "resourceType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            }
+        },
+        {
+            "type": "BindingVar",
+            "attributes": [],
+            "addressSpace": "private",
+            "readWrite": null,
+            "name": {
+                "type": "Identifier",
+                "value": "globalValue"
+            },
+            "resourceType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "saturate"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": [
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "value"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    }
+                ]
+            },
+            "returnType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "multiply"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": [
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "a"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    },
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "b"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    }
+                ]
+            },
+            "returnType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "calculateNormal"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": [
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "normal"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    },
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "model"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    }
+                ]
+            },
+            "returnType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testExpressions"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": [
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "value"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    },
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "index"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    }
+                ]
+            },
+            "returnType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testTypes"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": []
+            },
+            "returnType": null,
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testAssignments"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": []
+            },
+            "returnType": null,
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testIf"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": [
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "value"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    }
+                ]
+            },
+            "returnType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testSwitch"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": [
+                    {
+                        "type": "FunctionArg",
+                        "attributes": [],
+                        "name": {
+                            "type": "Identifier",
+                            "value": "value"
+                        },
+                        "typeName": {
+                            "type": "ConcreteType",
+                            "name": {
+                                "type": "Identifier",
+                                "value": "array"
+                            }
+                        }
+                    }
+                ]
+            },
+            "returnType": {
+                "type": "ConcreteType",
+                "name": {
+                    "type": "Identifier",
+                    "value": "array"
+                }
+            },
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testFor"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": []
+            },
+            "returnType": null,
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
+        },
+        {
+            "type": "Function",
+            "name": {
+                "type": "Identifier",
+                "value": "testLoop"
+            },
+            "attributes": [],
+            "arguments": {
+                "type": "FunctionArgList",
+                "arguments": []
+            },
+            "returnType": null,
+            "scope": {
+                "type": "StatementScope",
+                "statements": []
+            }
         },
         {
             "type": "RenderPass",
@@ -71,6 +757,29 @@
                 "value": "Shadow"
             },
             "declarations": [
+                {
+                    "type": "BindingGroup",
+                    "kind": "resource",
+                    "declarations": [
+                        {
+                            "type": "BindingVar",
+                            "attributes": [],
+                            "addressSpace": "handle",
+                            "readWrite": null,
+                            "name": {
+                                "type": "Identifier",
+                                "value": "shadowMap"
+                            },
+                            "resourceType": {
+                                "type": "ConcreteType",
+                                "name": {
+                                    "type": "Identifier",
+                                    "value": "array"
+                                }
+                            }
+                        }
+                    ]
+                },
                 {
                     "type": "Function",
                     "name": {
@@ -97,7 +806,7 @@
                                     "type": "ConcreteType",
                                     "name": {
                                         "type": "Identifier",
-                                        "value": "VertexInput"
+                                        "value": "array"
                                     }
                                 }
                             }
@@ -107,7 +816,7 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "VertexOutput"
+                            "value": "array"
                         }
                     },
                     "scope": {
@@ -153,7 +862,7 @@
                                 "type": "ConcreteType",
                                 "name": {
                                     "type": "Identifier",
-                                    "value": "f32"
+                                    "value": "array"
                                 }
                             }
                         }
@@ -185,7 +894,7 @@
                                     "type": "ConcreteType",
                                     "name": {
                                         "type": "Identifier",
-                                        "value": "VertexOutput"
+                                        "value": "array"
                                     }
                                 }
                             }
@@ -195,7 +904,7 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "FragOut"
+                            "value": "array"
                         }
                     },
                     "scope": {
@@ -229,7 +938,7 @@
                                 "type": "ConcreteType",
                                 "name": {
                                     "type": "Identifier",
-                                    "value": "texture_depth_2d"
+                                    "value": "array"
                                 }
                             }
                         },
@@ -246,7 +955,7 @@
                                 "type": "ConcreteType",
                                 "name": {
                                     "type": "Identifier",
-                                    "value": "texture_depth_2d"
+                                    "value": "array"
                                 }
                             }
                         }
@@ -278,7 +987,7 @@
                                     "type": "ConcreteType",
                                     "name": {
                                         "type": "Identifier",
-                                        "value": "VertexInput"
+                                        "value": "array"
                                     }
                                 }
                             }
@@ -288,7 +997,7 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "VertexOutput"
+                            "value": "array"
                         }
                     },
                     "scope": {
@@ -334,7 +1043,7 @@
                                 "type": "ConcreteType",
                                 "name": {
                                     "type": "Identifier",
-                                    "value": "vec4f"
+                                    "value": "array"
                                 }
                             }
                         }
@@ -366,7 +1075,7 @@
                                     "type": "ConcreteType",
                                     "name": {
                                         "type": "Identifier",
-                                        "value": "VertexOutput"
+                                        "value": "array"
                                     }
                                 }
                             }
@@ -376,7 +1085,7 @@
                         "type": "ConcreteType",
                         "name": {
                             "type": "Identifier",
-                            "value": "FragOut"
+                            "value": "array"
                         }
                     },
                     "scope": {

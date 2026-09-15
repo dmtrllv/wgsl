@@ -71,8 +71,8 @@ fn testExpressions(value: f32, index: i32) -> f32 {
 
     let result = select(a, b, logical);
 
-    let array: array<f32, 4>;
-    let element = array[index];
+    let ar: array<f32, 4>;
+    let element = ar[index];
 
     return result + element + c + d;
 }
@@ -152,7 +152,7 @@ fn testSwitch(value: i32) -> i32 {
 fn testFor() {
     var i = 0;
 
-    for (var a = 0; a < 10; a++) {
+    for (var a = 0; a < 10; a += 1) {
         i += a;
     }
 

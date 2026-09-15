@@ -68,3 +68,26 @@ export type LetDeclAst = AstType<"LetDecl", {
 	typeName: TypeAst | null,
 	expr: ExprAst | null
 }>;
+
+
+export const parseOverrideDeclaration = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<OverrideDeclAst>(iter, () => {
+	iter.expect(Keyword.Override);
+	const name = parseIdent(iter);
+	const typeName = iter.nextIf(Sep.Colon) && parseType(iter, ctx);
+	const expr = iter.nextIf(Op.Assign) && parseExpr(iter, 0, ctx);
+	iter.expect(Sep.Semicolon);
+	return {
+		type: "OverrideDecl",
+		attributes,
+		name,
+		typeName,
+		expr
+	}
+});	
+
+export type OverrideDeclAst = AstType<"OverrideDecl", {
+	attributes: AttributeAst[],
+	name: IdentAst,
+	typeName: TypeAst | null,
+	expr: ExprAst | null
+}>;

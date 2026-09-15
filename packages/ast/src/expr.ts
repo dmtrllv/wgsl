@@ -57,8 +57,9 @@ const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst => {
 	const token = iter.peek();
 
 	if (token.type.kind === "Operator") {
-		if (!UNARY_OPERATORS.has(token.type))
+		if (!UNARY_OPERATORS.has(token.type)) {
 			throw new Error("Expected unary operator");
+		}
 
 		return parseUnary(iter, ctx);
 	}
@@ -73,8 +74,8 @@ const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst => {
 				expr
 			};
 		});
-	} if (token.type === Sep.LBracket) {
-		throw new Error("TODO: parse array decl");
+	} else if (token.type === Sep.LBracket) {
+		return parseArrayDecl(iter, ctx);
 	}
 
 	return parseOperandVal(iter, ctx);
@@ -173,6 +174,28 @@ const parseOperandVal = (iter: Iter, ctx: DiagnosticsContext): ExprAst => parseW
 	}
 });
 
+const parseArrayDecl = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<ArrayDeclAst>(iter, () => {
+	const expressions: ExprAst[] = [];
+
+	iter.expect(Sep.LBracket);
+
+	if (!iter.nextIf(Sep.RBracket))
+		console.log(iter.peek());
+		while (!iter.ended) {
+			expressions.push(parseExpr(iter, 0, ctx));
+			console.log("parsed expr");
+			if (!iter.nextIf(Sep.Comma)) {
+				iter.expect(Sep.RBracket);
+				break;
+			}
+		}
+
+	return {
+		type: "ArrayDecl",
+		expressions
+	}
+});
+
 const parseArrayIndex = (iter: Iter, expr: ExprAst, ctx: DiagnosticsContext) => parseWithSpan<ArrayIndexAst>(iter, () => {
 	return {
 		type: "ArrayIndex",
@@ -264,7 +287,12 @@ export type ExprAst =
 	| ArrayIndexAst
 	| ExprGroupAst
 	| BitcastAst
-	| GenericCallExprAst;
+	| GenericCallExprAst
+	| ArrayDeclAst;
+
+export type ArrayDeclAst = AstType<"ArrayDecl", {
+	expressions: ExprAst[]
+}>;
 
 export type BitcastAst = AstType<"Bitcast", {
 	typeName: TypeAst,

@@ -11,7 +11,7 @@ import { parseRenderPass, RenderPassAst } from "./pass.js";
 import { parseIdent } from "./ident.js";
 import { BindingGroupAst, parseBindingGroup } from "./group_block.js";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
-import { ConstDeclAst, parseConstDeclaration } from "./var.js";
+import { ConstDeclAst, OverrideDeclAst, parseConstDeclaration, parseOverrideDeclaration } from "./var.js";
 
 export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
 	const imports: ImportAst[] = [];
@@ -20,6 +20,9 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 	while (!iter.ended) {
 		const token = iter.peek();
 		switch (token.type) {
+			case Keyword.Override:
+				declarations.push(parseOverrideDeclaration(iter, [], ctx));
+				break;
 			case Keyword.Import:
 				imports.push(parseImport(iter));
 				break;
@@ -124,4 +127,5 @@ type DeclarationAst =
 	| RenderPassAst
 	| BindingGroupAst
 	| ImportAst
-	| ConstDeclAst;
+	| ConstDeclAst
+	| OverrideDeclAst;

@@ -13,9 +13,11 @@ export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: Diagn
 	iter.expect(Keyword.Fn);
 	const name = parseIdent(iter);
 	const args = parseFunctionArgList(iter, ctx);
-	iter.expect(Op.Sub);
-	iter.expect(Op.Gt);
-	const returnType = parseType(iter, ctx);
+	let returnType: TypeAst | null = null;
+	if(iter.nextIf(Op.Sub)) {
+		iter.expect(Op.Gt);
+		returnType = parseType(iter, ctx);
+	}
 	return {
 		type: "Function",
 		name,
@@ -89,6 +91,7 @@ export type FunctionAst = AstType<"Function", {
 	name: IdentAst,
 	attributes: AttributeAst[],
 	arguments: FunctionArgListAst,
+	returnType: TypeAst | null;
 }>;
 
 export type FunctionArgListAst = AstType<"FunctionArgList", {
