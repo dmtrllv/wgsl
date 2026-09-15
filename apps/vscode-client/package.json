@@ -46,13 +46,16 @@
 		"watch": "tsc -watch -p ./"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.136.0",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "24.x",
+		"@types/vscode": "^1.136.0",
 		"typescript": "^6.0.3"
 	},
 	"overrides": {
 		"diff": "^8.0.4",
 		"serialize-javascript": "^7.0.6"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^10.1.1"
 	}
 }

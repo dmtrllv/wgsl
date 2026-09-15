@@ -9,23 +9,22 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(output);
 
 	output.appendLine("Extension activated");
+	output.appendLine(context.extensionUri.fsPath);
 
-	const p = vscode.Uri.joinPath(context.extensionUri, "../../apps/language-server/dist/main.js");
+	const serverModule = vscode.Uri.joinPath(context.extensionUri, "../language-server/dist/main.js").fsPath;
 
-	if(!existsSync(p.fsPath)) {
-		output.appendLine(p.fsPath + " does not exists!");
+	if(!existsSync(serverModule)) {
+		output.appendLine(serverModule + " does not exists!");
 		return;
 	}
 	
-	const serverModule = vscode.Uri.joinPath(context.extensionUri, "../../language-server/dist/main.js");
-
 	const serverOptions = {
 		run: {
-			module: serverModule.fsPath,
+			module: serverModule,
 			transport: TransportKind.stdio,
 		},
 		debug: {
-			module: serverModule.fsPath,
+			module: serverModule,
 			transport: TransportKind.stdio,
 		},
 	};

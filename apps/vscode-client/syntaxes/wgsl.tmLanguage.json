@@ -1,96 +1,200 @@
 {
-    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "name": "WGSL",
-    "scopeName": "source.wgsl",
-    "patterns": [
-        {
-            "include": "#comments"
-        },
-        {
-            "include": "#keywords"
-        },
-        {
-            "include": "#types"
-        },
-        {
-            "include": "#builtins"
-        },
-        {
-            "include": "#functions"
-        },
-        {
-            "include": "#strings"
-        },
-        {
-            "include": "#numbers"
-        }
-    ],
-    "repository": {
-        "comments": {
-            "patterns": [
-                {
-                    "name": "comment.line.double-slash.wgsl",
-                    "match": "//.*$"
-                },
-                {
-                    "name": "comment.block.wgsl",
-                    "begin": "/\\*",
-                    "end": "\\*/"
-                }
-            ]
-        },
-        "keywords": {
-            "patterns": [
-                {
-                    "name": "keyword.control.wgsl",
-                    "match": "\\b(fn|var|let|const|struct|if|else|for|while|loop|continuing|switch|case|default|return|break|continue|discard)\\b"
-                },
-                {
-                    "name": "storage.type.wgsl",
-                    "match": "\\b(var|let|const)\\b"
-                }
-            ]
-        },
-        "types": {
-            "patterns": [
-                {
-                    "name": "support.type.wgsl",
-                    "match": "\\b(bool|i32|u32|f32|f16|vec[234](f|i|u)|mat[234]x[234](f|h)|array|atomic|ptr)\\b"
-                }
-            ]
-        },
-        "builtins": {
-            "patterns": [
-                {
-                    "name": "support.function.wgsl",
-                    "match": "\\b(position|frag_depth|front_facing|global_invocation_id|local_invocation_id|local_invocation_index|instance_index|vertex_index)\\b"
-                }
-            ]
-        },
-        "functions": {
-            "patterns": [
-                {
-                    "name": "entity.name.function.wgsl",
-                    "match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=\\s*\\()"
-                }
-            ]
-        },
-        "strings": {
-            "patterns": [
-                {
-                    "name": "string.quoted.double.wgsl",
-                    "begin": "\"",
-                    "end": "\""
-                }
-            ]
-        },
-        "numbers": {
-            "patterns": [
-                {
-                    "name": "constant.numeric.wgsl",
-                    "match": "\\b[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?[fiu]?\\b"
-                }
-            ]
-        }
-    }
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "WGSL",
+	"scopeName": "source.wgsl",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#attributes"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#structs"
+		},
+		{
+			"include": "#types"
+		},
+		{
+			"include": "#builtins"
+		},
+		{
+			"include": "#constants"
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#operators"
+		},
+		{
+			"include": "#properties"
+		},
+		{
+			"include": "#declaration-types"
+		},
+		{
+			"include": "#var-address-space"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash.wgsl",
+					"match": "//.*$"
+				},
+				{
+					"name": "comment.block.wgsl",
+					"begin": "/\\*",
+					"end": "\\*/"
+				}
+			]
+		},
+
+		"attributes": {
+			"patterns": [
+				{
+					"name": "entity.name.function.wgsl",
+					"match": "@[A-Za-z_][A-Za-z0-9_]*"
+				}
+			]
+		},
+
+		"keywords": {
+			"patterns": [
+				{
+					"name": "storage.type.wgsl",
+					"match": "\\b(var|let|const|override)\\b"
+				},
+				{
+					"name": "keyword.control.wgsl",
+					"match": "\\b(if|else|for|while|loop|continuing|switch|case|default|return|break|continue|discard)\\b"
+				},
+				{
+					"name": "keyword.other.wgsl",
+					"match": "\\b(fn|struct|alias|enable|requires|diagnostic)\\b"
+				}
+			]
+		},
+
+		"structs": {
+			"patterns": [
+				{
+					"begin": "\\bstruct[ \\t]+",
+					"end": "(?=\\{)",
+					"patterns": [
+						{
+							"name": "entity.name.type.wgsl",
+							"match": "[A-Za-z_][A-Za-z0-9_]*"
+						}
+					]
+				}
+			]
+		},
+
+		"types": {
+			"patterns": [
+				{
+					"name": "support.type.wgsl",
+					"match": "\\b(bool|i32|u32|f32|f16|vec[234][fiu]?|mat[234]x[234][fh]|array|atomic|ptr)\\b"
+				}
+			]
+		},
+
+		"builtins": {
+			"patterns": [
+				{
+					"name": "support.function.wgsl",
+					"match": "\\b(abs|acos|asin|atan|ceil|clamp|cos|cross|dot|exp|floor|length|max|min|normalize|pow|round|sin|sqrt|tan|trunc)\\b"
+				}
+			]
+		},
+
+		"constants": {
+			"patterns": [
+				{
+					"name": "constant.language.wgsl",
+					"match": "\\b(true|false)\\b"
+				}
+			]
+		},
+
+		"functions": {
+			"patterns": [
+				{
+					"name": "entity.name.function.wgsl",
+					"match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=[ \\t]*\\()"
+				}
+			]
+		},
+
+		"strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.wgsl",
+					"begin": "\"",
+					"end": "\""
+				}
+			]
+		},
+
+		"numbers": {
+			"patterns": [
+				{
+					"name": "constant.numeric.wgsl",
+					"match": "\\b[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?[fiu]?\\b"
+				}
+			]
+		},
+
+		"operators": {
+			"patterns": [
+				{
+					"name": "keyword.operator.wgsl",
+					"match": "==|!=|<=|>=|&&|\\|\\||<<|>>|[+\\-*/%<>=!&|^~]"
+				}
+			]
+		},
+
+		"properties": {
+			"patterns": [
+				{
+					"name": "variable.other.property.wgsl",
+					"match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=[ \\t]*:)"
+				}
+			]
+		},
+
+		"declaration-types": {
+			"patterns": [
+				{
+					"name": "support.type.wgsl",
+					"match": "\\b[A-Za-z_][A-Za-z0-9_]*(?=[ \\t]*\\{)"
+				}
+			]
+		},
+
+		"var-address-space": {
+			"patterns": [
+				{
+					"name": "storage.type.wgsl",
+					"match": "\\b(uniform|storage|private|workgroup|function)\\b"
+				},
+				{
+					"name": "storage.type.wgsl",
+					"match": "\\b(read|write|read_write)\\b"
+				}
+			]
+		}
+	}
 }

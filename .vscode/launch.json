@@ -12,7 +12,8 @@
 			"outFiles": [
 				"${workspaceFolder}/apps/vscode-client/dist/**/*.js"
 			],
-			"preLaunchTask": "npm: build - apps/vscode-client"
+			"sourceMaps": true,
+			"trace": true,
 		}
 	]
 }
