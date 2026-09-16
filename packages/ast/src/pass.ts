@@ -80,18 +80,20 @@ const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<At
 		case "material":
 		case "global":
 		case "resource":
-			return parseBindingGroup(iter, ident.value, ctx);
+			return parseBindingGroup(iter, ident, ctx);
 		default:
 			if (iter.isNext(Sep.LParen)) {
 				return {
 					type: "Attribute",
-					args: parseFunctionArgList(iter, ctx),
+					name: ident,
+					argList: parseFunctionArgList(iter, ctx),
 
 				};
 			} else {
 				return {
 					type: "Attribute",
-					args: []
+					name: ident,
+					argList: []
 				};
 			}
 	}

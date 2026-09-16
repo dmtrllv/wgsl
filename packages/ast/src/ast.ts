@@ -21,23 +21,23 @@ export type AstType<Name extends string, Data extends {} = {}> = {
 
 export type Ast =
 	| ModuleAst
-	| DeclarationAsts
+	| DeclarationAst
 	| TypeAst
 	| ExprAst
 	| StmtAst
 	| MiscAsts;
 
-export type DeclarationAsts =
+export type DeclarationAst =
 	| StructAst
 	| FunctionAst
 	| BindingVarDeclAst
 	| RenderPassAst
 	| BindingGroupAst
-	| ImportAst
 	| VarDeclAst
 	| LetDeclAst
 	| ConstDeclAst 
-	| OverrideDeclAst;
+	| OverrideDeclAst
+	| FunctionArgAst;
 
 export type MiscAsts =
 	| IdentAst
@@ -45,5 +45,5 @@ export type MiscAsts =
 	| AttributeAst
 	| FunctionArgListAst
 	| FunctionArgExprListAst
-	| FunctionArgAst
-	| StmtScopeAst;
+	| StmtScopeAst
+	| ImportAst;

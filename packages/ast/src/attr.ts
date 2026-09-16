@@ -4,5 +4,5 @@ import { IdentAst } from "./ident.js";
 
 export type AttributeAst = AstType<"Attribute", {
 	name: IdentAst,
-	arguments: FunctionArgExprListAst | null,
+	argList: FunctionArgExprListAst | null,
 }>;

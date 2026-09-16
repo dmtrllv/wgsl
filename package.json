@@ -7,7 +7,7 @@
 	],
 	"devDependencies": {
 		"@tsconfig/strictest": "^2.0.8",
-		"@types/node": "^26.5.0",
+		"@types/node": "^26.6.1",
 		"concurrently": "^10.0.5",
 		"nodemon": "^3.1.14",
 		"typescript": "^7.0.2"
@@ -19,6 +19,7 @@
 		"watch-core": "cd packages/core && npm run watch",
 		"watch-utils": "cd packages/utils && npm run watch",
 		"watch-lexer": "cd packages/lexer && npm run watch",
-		"watch-ast": "cd packages/ast && npm run watch"
+		"watch-ast": "cd packages/ast && npm run watch",
+		"watch-symbol": "cd packages/symbol && npm run watch"
 	}
 }

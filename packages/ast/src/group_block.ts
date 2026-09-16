@@ -5,8 +5,9 @@ import { parseWithSpan } from "./parser.js";
 import { DiagnosticsContext } from "@wgsl/core";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
 import { AttributeAst } from "./attr.js";
+import { IdentAst } from "./ident.js";
 
-export const parseBindingGroup = (iter: Iter, kind: BindingGroupKind, ctx: DiagnosticsContext) => parseWithSpan<BindingGroupAst>(iter, () => {
+export const parseBindingGroup = (iter: Iter, ident: IdentAst, ctx: DiagnosticsContext) => parseWithSpan<BindingGroupAst>(iter, () => {
 	iter.expect(Sep.LBrace);
 
 	const declarations: BindingVarDeclAst[] = [];
@@ -21,7 +22,7 @@ export const parseBindingGroup = (iter: Iter, kind: BindingGroupKind, ctx: Diagn
 
 	return {
 		type: "BindingGroup",
-		kind,
+		name: ident,
 		declarations,
 	};
 });
@@ -33,12 +34,6 @@ const parseAttributes = (_iter: Iter, _ctx: DiagnosticsContext) => {
 };
 
 export type BindingGroupAst = AstType<"BindingGroup", {
-	kind: BindingGroupKind;
+	name: IdentAst;
 	declarations: BindingVarDeclAst[];
 }>;
-
-type BindingGroupKind =
-	| "material"
-	| "global"
-	| "object"
-	| "resource";

@@ -62,7 +62,7 @@ const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<At
 
 	return {
 		type: "Attribute",
-		arguments: args,
+		argList: args,
 		name
 	};
 });

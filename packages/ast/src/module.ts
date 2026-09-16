@@ -90,20 +90,21 @@ const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<At
 		case "object":
 		case "material":
 		case "global":
-			return parseBindingGroup(iter, ident.value, ctx);
+			return parseBindingGroup(iter, ident, ctx);
 		case "pass":
 			return parseRenderPass(iter, ctx);
 		default:
 			if (iter.isNext(Sep.LParen)) {
 				return {
 					type: "Attribute",
-					args: parseFunctionArgList(iter, ctx),
-
+					arguments: parseFunctionArgList(iter, ctx),
+					name: ident,
 				};
 			} else {
 				return {
 					type: "Attribute",
-					args: []
+					name: ident,
+					arguments: []
 				};
 			}
 	}

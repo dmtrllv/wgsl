@@ -11,7 +11,8 @@
 	},
 	"dependencies": {
 		"@wgsl/core": "0.0.1",
-		"@wgsl/compiler": "0.0.1"
+		"@wgsl/compiler": "0.0.1",
+		"@wgsl/symbol": "0.0.1"
 	},
 	"bin": {
 		"wgsl": "./dist/index.js"

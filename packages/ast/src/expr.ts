@@ -180,10 +180,8 @@ const parseArrayDecl = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<Ar
 	iter.expect(Sep.LBracket);
 
 	if (!iter.nextIf(Sep.RBracket))
-		console.log(iter.peek());
 		while (!iter.ended) {
 			expressions.push(parseExpr(iter, 0, ctx));
-			console.log("parsed expr");
 			if (!iter.nextIf(Sep.Comma)) {
 				iter.expect(Sep.RBracket);
 				break;

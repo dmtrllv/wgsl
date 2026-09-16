@@ -1,4 +1,5 @@
 import { clearScreen } from "@wgsl/utils";
+import { Scope } from "@wgsl/symbol";
 
 clearScreen();
 
@@ -12,13 +13,22 @@ const compiler = new Compiler(rootDir);
 
 const ctx = new DiagnosticsContext();
 
-const ast = await compiler.getAst("test.wgsl", ctx);
+const symbols = await compiler.getSymbols("test.wgsl", ctx);
 //const ast = await compiler.getTokens("test.wgsl", ctx);
 
-if(!isDiagnosticError(ast) && !ctx.hasErrors()) {
-	const json = JSON.stringify(ast, (k, v) => k === "span" ? undefined : v, 4);
-	console.log(json);
-	writeFileSync("test.ast.json", json, "utf-8");
+const logSymbols = (scope: Scope, offset: number = 0) => {
+	const log = (msg: any) => console.log(new Array(offset).fill(' ').join("") + msg);
+	for(const [name, s] of scope.symbols) {
+		log(`${s.type}: ${name}`);
+		if("scope" in s) 
+			logSymbols(s.scope, offset + 4);
+	}
+}
+
+if(!isDiagnosticError(symbols) && !ctx.hasErrors()) {
+	logSymbols(symbols);
+	const json = JSON.stringify(symbols, (k, v) => k === "declaration" ? undefined : v, 4);
+	writeFileSync("test.symbols.json", json, "utf-8");
 } else {
 	ctx.log();
 }

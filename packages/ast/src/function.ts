@@ -5,7 +5,7 @@ import { Iter } from "./iter.js";
 import { parseWithSpan } from "./parser.js";
 import { IdentAst, parseIdent } from "./ident.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
-import { parseScope } from "./scope.js";
+import { parseScope, StmtScopeAst } from "./scope.js";
 import { parseType, TypeAst } from "./type.js";
 import { ExprAst, parseExpr } from "./expr.js";
 
@@ -22,9 +22,9 @@ export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: Diagn
 		type: "Function",
 		name,
 		attributes,
-		arguments: args,
+		argList: args,
 		returnType,
-		scope: parseScope(iter, ctx)
+		body: parseScope(iter, ctx)
 	};
 });
 
@@ -90,8 +90,9 @@ export const parseFunctionCall = (iter: Iter, expr: ExprAst, ctx: DiagnosticsCon
 export type FunctionAst = AstType<"Function", {
 	name: IdentAst,
 	attributes: AttributeAst[],
-	arguments: FunctionArgListAst,
+	argList: FunctionArgListAst,
 	returnType: TypeAst | null;
+	body: StmtScopeAst;
 }>;
 
 export type FunctionArgListAst = AstType<"FunctionArgList", {
