@@ -3,6 +3,7 @@
 	"displayName": "wgsl-client",
 	"description": "",
 	"version": "0.0.1",
+	"publisher": "dmtrllv",
 	"engines": {
 		"vscode": "^1.136.0"
 	},
@@ -42,8 +43,10 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./"
+		"compile": "tsc",
+		"watch": "tsc -w",
+		"build-server-win": "xcopy \"../language-server/dist\" \"./out/language-server\" /E /I",
+		"install-ext-win": "npm run build-server-win && mklink /D \"%USERPROFILE%\\.vscode\\extensions\\dmtrllv.wgsl-client-0.0.1\" \"apps\\vscode-client\""
 	},
 	"devDependencies": {
 		"@types/mocha": "^10.0.10",

@@ -11,13 +11,21 @@ export function activate(context: vscode.ExtensionContext) {
 	output.appendLine("Extension activated");
 	output.appendLine(context.extensionUri.fsPath);
 
-	const serverModule = vscode.Uri.joinPath(context.extensionUri, "../language-server/dist/main.js").fsPath;
+	process.on("uncaughtException", (err) => {
+		output.appendLine(`UNCAUGHT EXCEPTION: ${err.stack ?? err}`);
+	});
 
-	if(!existsSync(serverModule)) {
+	process.on("unhandledRejection", (reason) => {
+		output.appendLine(`UNHANDLED REJECTION: ${String(reason)}`);
+	});
+
+	const serverModule = vscode.Uri.joinPath(context.extensionUri, "out/language-server/main.js").fsPath;
+
+	if (!existsSync(serverModule)) {
 		output.appendLine(serverModule + " does not exists!");
 		return;
 	}
-	
+
 	const serverOptions = {
 		run: {
 			module: serverModule,

@@ -82,7 +82,7 @@
 				},
 				{
 					"name": "keyword.other.wgsl",
-					"match": "\\b(fn|struct|alias|enable|requires|diagnostic)\\b"
+					"match": "\\b(import|fn|struct|alias|enable|requires|diagnostic)\\b"
 				}
 			]
 		},
@@ -101,12 +101,19 @@
 				}
 			]
 		},
-
 		"types": {
 			"patterns": [
 				{
 					"name": "support.type.wgsl",
-					"match": "\\b(bool|i32|u32|f32|f16|vec[234][fiu]?|mat[234]x[234][fh]|array|atomic|ptr)\\b"
+					"match": "(:)\\s*([a-zA-Z0-9_<>]+)",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition"
+						},
+						"2": {
+							"name": "support.type.wgsl"
+						}
+					}
 				}
 			]
 		},

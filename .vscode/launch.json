@@ -8,12 +8,7 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}/apps/vscode-client",
 				"--folder-uri=${workspaceFolder}/tests"
-			],
-			"outFiles": [
-				"${workspaceFolder}/apps/vscode-client/dist/**/*.js"
-			],
-			"sourceMaps": true,
-			"trace": true,
+			]
 		}
 	]
 }
