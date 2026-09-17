@@ -6,6 +6,8 @@ export class SymbolTable {
 	public readonly scopes: Map<Ast, Scope>;
 	public readonly moduleScope: Scope;
 
+	public readonly imports = new Map<string, Scope>();
+
 	public constructor(ast: ModuleAst, ctx: DiagnosticsContext) {
 		this.scopes = new Map<Ast, Scope>();
 		this.moduleScope = new Scope("Module", null, this);

@@ -130,6 +130,12 @@ export class Compiler {
 			if (!isDiagnosticError(symbolTable))
 				this.symbolTables.set(path, symbolTable);
 
+			for (const im of ast.imports) {
+				const st = await this.getSymbols(im.path + ".wgsl", ctx);
+				if (!isDiagnosticError(st))
+					symbolTable.imports.set(im.path, st.moduleScope);
+			}
+
 			return symbolTable;
 		});
 	}
