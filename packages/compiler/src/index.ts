@@ -5,14 +5,14 @@ import { ModuleAst, parseTokens } from "@wgsl/ast";
 import { readdir, readFile, stat } from "node:fs/promises";
 import { isAbsolute, join, sep as PATH_SEP } from "node:path";
 import { mapParallel } from "@wgsl/utils";
-import { resolveSymbols, Scope } from "@wgsl/symbol";
+import { SymbolTable } from "@wgsl/symbol";
 
 export class Compiler {
 	public readonly rootDir: string;
 	public readonly sources: Map<string, string> = new Map();
 	public readonly tokens: Map<string, Token[]> = new Map();
 	public readonly asts: Map<string, ModuleAst> = new Map();
-	public readonly symbols: Map<string, Scope> = new Map();
+	public readonly symbolTables: Map<string, SymbolTable> = new Map();
 
 	public constructor(rootDir: string) {
 		this.rootDir = rootDir + PATH_SEP;
@@ -117,20 +117,20 @@ export class Compiler {
 		return ctx.tryAsync(async () => {
 			path = this.getRelativePath(path);
 
-			if (this.symbols.has(path))
-				return this.symbols.get(path)!;
+			if (this.symbolTables.has(path))
+				return this.symbolTables.get(path)!;
 
 			const ast = await this.getAst(path, ctx);
 
 			if (isDiagnosticError(ast))
 				return ast;
 
-			const symbols = resolveSymbols(ast, ctx);
+			const symbolTable = new SymbolTable(ast, ctx);
 
-			if (!isDiagnosticError(symbols))
-				this.symbols.set(path, symbols);
+			if (!isDiagnosticError(symbolTable))
+				this.symbolTables.set(path, symbolTable);
 
-			return symbols;
+			return symbolTable;
 		});
 	}
 

@@ -1,4 +1,4 @@
-import { DeclarationAst } from "@wgsl/ast";
+import { DeclarationAst, BindingAccessMode, BindingAddressSpace } from "@wgsl/ast";
 import { Scope, ScopeType } from "./scope.js";
 
 export type SymbolType<Type extends string, T extends {} = {}> = {
@@ -11,14 +11,26 @@ export type SymbolTypeWithScope<Type extends ScopeType> = SymbolType<Type, { rea
 
 export type Symbol =
 	| SymbolType<"Struct">
-	| SymbolType<"Variable">
 	| SymbolType<"Argument">
 	| SymbolType<"TypeAlias">
 	| SymbolType<"Const">
 	| SymbolType<"Override">
+	| VariableSymbol
 	| ScopedSymbol;
 
 export type ScopedSymbol =
 	| SymbolTypeWithScope<"Function">
 	| SymbolTypeWithScope<"RenderPass">
 	| SymbolTypeWithScope<"BindingGroup">;
+
+export type VariableKind =
+	| "let"
+	| "var"
+	| "const"
+	| "override";
+
+export type VariableSymbol = SymbolType<"Variable", {
+	readonly kind: VariableKind;
+	readonly addressSpace?: BindingAddressSpace | null;
+	readonly accessMode?: BindingAccessMode | null;
+}>

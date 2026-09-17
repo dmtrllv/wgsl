@@ -30,14 +30,26 @@ export type Ast =
 export type DeclarationAst =
 	| StructAst
 	| FunctionAst
-	| BindingVarDeclAst
 	| RenderPassAst
 	| BindingGroupAst
-	| VarDeclAst
-	| LetDeclAst
-	| ConstDeclAst 
+	| VarDeclarationAst
 	| OverrideDeclAst
 	| FunctionArgAst;
+
+export type VarDeclarationAst =
+	| BindingVarDeclAst
+	| VarDeclAst
+	| LetDeclAst
+	| ConstDeclAst;
+
+const VAR_DECLARATION_TYPES = [
+	"BindingVar",
+	"ConstDecl",
+	"LetDecl",
+	"VarDecl"
+];
+
+export const isVarDeclarationAst = (ast: Ast): ast is VarDeclarationAst => VAR_DECLARATION_TYPES.includes(ast.type);
 
 export type MiscAsts =
 	| IdentAst

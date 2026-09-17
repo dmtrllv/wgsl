@@ -1,231 +1,315 @@
 {
-    "type": "Module",
-    "symbols": {
-        "material": {
-            "type": "BindingGroup",
-            "name": "material",
-            "scope": {
+    "scopes": {},
+    "moduleScope": {
+        "type": "Module",
+        "symbols": {
+            "material": {
                 "type": "BindingGroup",
-                "symbols": {}
-            }
-        },
-        "VertexInput": {
-            "type": "Struct",
-            "name": "VertexInput"
-        },
-        "VertexOutput": {
-            "type": "Struct",
-            "name": "VertexOutput"
-        },
-        "saturate": {
-            "type": "Function",
-            "name": "saturate",
-            "scope": {
-                "type": "Function",
-                "symbols": {
-                    "value": {
-                        "type": "Argument",
-                        "name": "value"
+                "name": "material",
+                "scope": {
+                    "type": "BindingGroup",
+                    "symbols": {
+                        "albedo": {
+                            "name": "albedo",
+                            "type": "Variable",
+                            "kind": "var",
+                            "accessMode": null,
+                            "addressSpace": "uniform"
+                        },
+                        "roughness": {
+                            "name": "roughness",
+                            "type": "Variable",
+                            "kind": "var",
+                            "accessMode": null,
+                            "addressSpace": "uniform"
+                        },
+                        "metallic": {
+                            "name": "metallic",
+                            "type": "Variable",
+                            "kind": "var",
+                            "accessMode": null,
+                            "addressSpace": "uniform"
+                        },
+                        "tiling": {
+                            "name": "tiling",
+                            "type": "Variable",
+                            "kind": "var",
+                            "accessMode": null,
+                            "addressSpace": "uniform"
+                        }
                     }
                 }
-            }
-        },
-        "multiply": {
-            "type": "Function",
-            "name": "multiply",
-            "scope": {
+            },
+            "VertexInput": {
+                "type": "Struct",
+                "name": "VertexInput"
+            },
+            "VertexOutput": {
+                "type": "Struct",
+                "name": "VertexOutput"
+            },
+            "PI": {
+                "name": "PI",
+                "type": "Variable",
+                "kind": "const"
+            },
+            "MAX_LIGHTS": {
+                "name": "MAX_LIGHTS",
+                "type": "Variable",
+                "kind": "const"
+            },
+            "ENABLE_SHADOWS": {
+                "name": "ENABLE_SHADOWS",
+                "type": "Variable",
+                "kind": "const"
+            },
+            "frameCount": {
+                "name": "frameCount",
+                "type": "Variable",
+                "kind": "var",
+                "accessMode": null,
+                "addressSpace": "private"
+            },
+            "globalValue": {
+                "name": "globalValue",
+                "type": "Variable",
+                "kind": "var",
+                "accessMode": null,
+                "addressSpace": "private"
+            },
+            "saturate": {
                 "type": "Function",
-                "symbols": {
-                    "a": {
-                        "type": "Argument",
-                        "name": "a"
-                    },
-                    "b": {
-                        "type": "Argument",
-                        "name": "b"
+                "name": "saturate",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {
+                        "value": {
+                            "type": "Argument",
+                            "name": "value"
+                        }
                     }
                 }
-            }
-        },
-        "calculateNormal": {
-            "type": "Function",
-            "name": "calculateNormal",
-            "scope": {
+            },
+            "multiply": {
                 "type": "Function",
-                "symbols": {
-                    "normal": {
-                        "type": "Argument",
-                        "name": "normal"
-                    },
-                    "model": {
-                        "type": "Argument",
-                        "name": "model"
+                "name": "multiply",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {
+                        "a": {
+                            "type": "Argument",
+                            "name": "a"
+                        },
+                        "b": {
+                            "type": "Argument",
+                            "name": "b"
+                        }
                     }
                 }
-            }
-        },
-        "testExpressions": {
-            "type": "Function",
-            "name": "testExpressions",
-            "scope": {
+            },
+            "calculateNormal": {
                 "type": "Function",
-                "symbols": {
-                    "value": {
-                        "type": "Argument",
-                        "name": "value"
-                    },
-                    "index": {
-                        "type": "Argument",
-                        "name": "index"
+                "name": "calculateNormal",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {
+                        "normal": {
+                            "type": "Argument",
+                            "name": "normal"
+                        },
+                        "model": {
+                            "type": "Argument",
+                            "name": "model"
+                        }
                     }
                 }
-            }
-        },
-        "testTypes": {
-            "type": "Function",
-            "name": "testTypes",
-            "scope": {
+            },
+            "testExpressions": {
                 "type": "Function",
-                "symbols": {}
-            }
-        },
-        "testAssignments": {
-            "type": "Function",
-            "name": "testAssignments",
-            "scope": {
-                "type": "Function",
-                "symbols": {}
-            }
-        },
-        "testIf": {
-            "type": "Function",
-            "name": "testIf",
-            "scope": {
-                "type": "Function",
-                "symbols": {
-                    "value": {
-                        "type": "Argument",
-                        "name": "value"
+                "name": "testExpressions",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {
+                        "value": {
+                            "type": "Argument",
+                            "name": "value"
+                        },
+                        "index": {
+                            "type": "Argument",
+                            "name": "index"
+                        }
                     }
                 }
-            }
-        },
-        "testSwitch": {
-            "type": "Function",
-            "name": "testSwitch",
-            "scope": {
+            },
+            "testTypes": {
                 "type": "Function",
-                "symbols": {
-                    "value": {
-                        "type": "Argument",
-                        "name": "value"
+                "name": "testTypes",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {}
+                }
+            },
+            "testAssignments": {
+                "type": "Function",
+                "name": "testAssignments",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {}
+                }
+            },
+            "testIf": {
+                "type": "Function",
+                "name": "testIf",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {
+                        "value": {
+                            "type": "Argument",
+                            "name": "value"
+                        }
                     }
                 }
-            }
-        },
-        "testFor": {
-            "type": "Function",
-            "name": "testFor",
-            "scope": {
+            },
+            "testSwitch": {
                 "type": "Function",
-                "symbols": {}
-            }
-        },
-        "testLoop": {
-            "type": "Function",
-            "name": "testLoop",
-            "scope": {
+                "name": "testSwitch",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {
+                        "value": {
+                            "type": "Argument",
+                            "name": "value"
+                        }
+                    }
+                }
+            },
+            "testFor": {
                 "type": "Function",
-                "symbols": {}
-            }
-        },
-        "Shadow": {
-            "type": "RenderPass",
-            "name": "Shadow",
-            "scope": {
+                "name": "testFor",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {}
+                }
+            },
+            "testLoop": {
+                "type": "Function",
+                "name": "testLoop",
+                "scope": {
+                    "type": "Function",
+                    "symbols": {}
+                }
+            },
+            "Shadow": {
                 "type": "RenderPass",
-                "symbols": {
-                    "resource": {
-                        "type": "BindingGroup",
-                        "name": "resource",
-                        "scope": {
+                "name": "Shadow",
+                "scope": {
+                    "type": "RenderPass",
+                    "symbols": {
+                        "resource": {
                             "type": "BindingGroup",
-                            "symbols": {}
-                        }
-                    },
-                    "vertexMain": {
-                        "type": "Function",
-                        "name": "vertexMain",
-                        "scope": {
-                            "type": "Function",
-                            "symbols": {
-                                "input": {
-                                    "type": "Argument",
-                                    "name": "input"
+                            "name": "resource",
+                            "scope": {
+                                "type": "BindingGroup",
+                                "symbols": {
+                                    "shadowMap": {
+                                        "name": "shadowMap",
+                                        "type": "Variable",
+                                        "kind": "var",
+                                        "accessMode": null,
+                                        "addressSpace": "handle"
+                                    }
                                 }
                             }
-                        }
-                    },
-                    "FragOut": {
-                        "type": "Struct",
-                        "name": "FragOut"
-                    },
-                    "fragmentMain": {
-                        "type": "Function",
-                        "name": "fragmentMain",
-                        "scope": {
+                        },
+                        "vertexMain": {
                             "type": "Function",
-                            "symbols": {
-                                "input": {
-                                    "type": "Argument",
-                                    "name": "input"
+                            "name": "vertexMain",
+                            "scope": {
+                                "type": "Function",
+                                "symbols": {
+                                    "input": {
+                                        "type": "Argument",
+                                        "name": "input"
+                                    }
+                                }
+                            }
+                        },
+                        "FragOut": {
+                            "type": "Struct",
+                            "name": "FragOut"
+                        },
+                        "fragmentMain": {
+                            "type": "Function",
+                            "name": "fragmentMain",
+                            "scope": {
+                                "type": "Function",
+                                "symbols": {
+                                    "input": {
+                                        "type": "Argument",
+                                        "name": "input"
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        },
-        "Forward": {
-            "type": "RenderPass",
-            "name": "Forward",
-            "scope": {
+            },
+            "Forward": {
                 "type": "RenderPass",
-                "symbols": {
-                    "resource": {
-                        "type": "BindingGroup",
-                        "name": "resource",
-                        "scope": {
+                "name": "Forward",
+                "scope": {
+                    "type": "RenderPass",
+                    "symbols": {
+                        "resource": {
                             "type": "BindingGroup",
-                            "symbols": {}
-                        }
-                    },
-                    "vertexMain": {
-                        "type": "Function",
-                        "name": "vertexMain",
-                        "scope": {
-                            "type": "Function",
-                            "symbols": {
-                                "input": {
-                                    "type": "Argument",
-                                    "name": "input"
+                            "name": "resource",
+                            "scope": {
+                                "type": "BindingGroup",
+                                "symbols": {
+                                    "depthTexture": {
+                                        "name": "depthTexture",
+                                        "type": "Variable",
+                                        "kind": "var",
+                                        "accessMode": null,
+                                        "addressSpace": "handle"
+                                    },
+                                    "shadowMap": {
+                                        "name": "shadowMap",
+                                        "type": "Variable",
+                                        "kind": "var",
+                                        "accessMode": null,
+                                        "addressSpace": "handle"
+                                    }
                                 }
                             }
-                        }
-                    },
-                    "FragOut": {
-                        "type": "Struct",
-                        "name": "FragOut"
-                    },
-                    "fragmentMain": {
-                        "type": "Function",
-                        "name": "fragmentMain",
-                        "scope": {
+                        },
+                        "vertexMain": {
                             "type": "Function",
-                            "symbols": {
-                                "input": {
-                                    "type": "Argument",
-                                    "name": "input"
+                            "name": "vertexMain",
+                            "scope": {
+                                "type": "Function",
+                                "symbols": {
+                                    "input": {
+                                        "type": "Argument",
+                                        "name": "input"
+                                    }
+                                }
+                            }
+                        },
+                        "FragOut": {
+                            "type": "Struct",
+                            "name": "FragOut"
+                        },
+                        "fragmentMain": {
+                            "type": "Function",
+                            "name": "fragmentMain",
+                            "scope": {
+                                "type": "Function",
+                                "symbols": {
+                                    "input": {
+                                        "type": "Argument",
+                                        "name": "input"
+                                    }
                                 }
                             }
                         }

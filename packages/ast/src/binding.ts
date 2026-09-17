@@ -10,7 +10,7 @@ import { AttributeAst } from "./attr.js";
 export const parseBindingVar = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<BindingVarDeclAst>(iter, () => {
 	iter.expect(Keyword.Var);
 	let addressSpace: BindingAddressSpace = "handle";
-	let readWrite: ReadWriteMode | null = null;
+	let readWrite: BindingAccessMode | null = null;
 	if (iter.nextIf(Op.Lt)) {
 		const s = parseIdent(iter);
 		if (!isBindingAddressSpace(s.value))
@@ -40,7 +40,7 @@ export const parseBindingVar = (iter: Iter, attributes: AttributeAst[], ctx: Dia
 		type: "BindingVar",
 		attributes,
 		addressSpace,
-		readWrite,
+		accessMode: readWrite,
 		name,
 		resourceType
 	}
@@ -54,7 +54,7 @@ export const parseBindingVar = (iter: Iter, attributes: AttributeAst[], ctx: Dia
 export type BindingVarDeclAst = AstType<"BindingVar", {
 	attributes: AttributeAst[],
 	addressSpace: BindingAddressSpace;
-	readWrite: ReadWriteMode | null;
+	accessMode: BindingAccessMode | null;
 	name: IdentAst,
 	resourceType: TypeAst;
 }>;
@@ -74,9 +74,9 @@ const READ_WRITE_MODES = [
 	"read_write"
 ] as const;
 
-export type ReadWriteMode = (typeof READ_WRITE_MODES)[number];
+export type BindingAccessMode = (typeof READ_WRITE_MODES)[number];
 
-export const isReadWriteMode = (value: string): value is ReadWriteMode => READ_WRITE_MODES.includes(value as ReadWriteMode);
+export const isReadWriteMode = (value: string): value is BindingAccessMode => READ_WRITE_MODES.includes(value as BindingAccessMode);
 
 export type BindingAddressSpace = (typeof BINDING_ADDRESS_SPACES)[number];
 

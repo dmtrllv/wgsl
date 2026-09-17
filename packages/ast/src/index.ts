@@ -3,3 +3,5 @@ export * from "./parser.js";
 export * from "./import.js";
 export * from "./module.js";
 export * from "./iter.js";
+export * from "./binding.js";
+export * from "./var.js";
