@@ -13,6 +13,7 @@ import { ExprAst } from "./expr.js";
 import { StmtAst } from "./stmt.js";
 import { BindingVarDeclAst } from "./binding.js";
 import { ConstDeclAst, LetDeclAst, OverrideDeclAst, VarDeclAst } from "./var.js";
+import { TypeAliasAst } from "./alias.js";
 
 export type AstType<Name extends string, Data extends {} = {}> = {
 	readonly type: Name;
@@ -34,13 +35,16 @@ export type DeclarationAst =
 	| BindingGroupAst
 	| VarDeclarationAst
 	| OverrideDeclAst
-	| FunctionArgAst;
+	| FunctionArgAst
+	| StructPropertyAst
+	| TypeAliasAst;
 
 export type VarDeclarationAst =
 	| BindingVarDeclAst
 	| VarDeclAst
 	| LetDeclAst
-	| ConstDeclAst;
+	| ConstDeclAst
+	| OverrideDeclAst;
 
 const VAR_DECLARATION_TYPES = [
 	"BindingVar",
@@ -53,7 +57,6 @@ export const isVarDeclarationAst = (ast: Ast): ast is VarDeclarationAst => VAR_D
 
 export type MiscAsts =
 	| IdentAst
-	| StructPropertyAst
 	| AttributeAst
 	| FunctionArgListAst
 	| FunctionArgExprListAst

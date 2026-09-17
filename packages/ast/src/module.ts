@@ -12,6 +12,7 @@ import { parseIdent } from "./ident.js";
 import { BindingGroupAst, parseBindingGroup } from "./group_block.js";
 import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
 import { ConstDeclAst, OverrideDeclAst, parseConstDeclaration, parseOverrideDeclaration } from "./var.js";
+import { parseTypeAlias, TypeAliasAst } from "./alias.js";
 
 export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
 	const imports: ImportAst[] = [];
@@ -20,6 +21,9 @@ export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => p
 	while (!iter.ended) {
 		const token = iter.peek();
 		switch (token.type) {
+			case Keyword.Alias:
+				declarations.push(parseTypeAlias(iter, ctx));
+				break;
 			case Keyword.Override:
 				declarations.push(parseOverrideDeclaration(iter, [], ctx));
 				break;
@@ -129,4 +133,5 @@ type DeclarationAst =
 	| BindingGroupAst
 	| ImportAst
 	| ConstDeclAst
-	| OverrideDeclAst;
+	| OverrideDeclAst
+	| TypeAliasAst;

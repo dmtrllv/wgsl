@@ -15,11 +15,12 @@ export class SymbolTable {
 	private resolve = (ast: Ast, scope: Scope, ctx: DiagnosticsContext) => {
 		switch (ast.type) {
 			case "Struct":
-				scope.add("Struct", ast);
+				const structScope = scope.addScoped("Struct", ast);
+				ast.properties.forEach(prop => structScope.add("Property", prop));
 				break;
 			case "BindingGroup":
-				const bindScope = scope.addScoped("BindingGroup", ast);
-				ast.declarations.forEach(decl => this.resolve(decl, bindScope, ctx));
+				//const bindScope = scope.addScoped("BindingGroup", ast);
+				ast.declarations.forEach(decl => this.resolve(decl, scope, ctx));
 				break;
 			case "Function":
 				const fnScope = scope.addScoped("Function", ast);
@@ -27,13 +28,14 @@ export class SymbolTable {
 				ast.body.statements.forEach(stmt => this.resolve(stmt, fnScope, ctx));
 				break;
 			case "RenderPass":
-				const rpScope = scope.addScoped("RenderPass", ast);
+				const rpScope = scope.addBlockScope(ast);
 				ast.declarations.forEach(decl => this.resolve(decl, rpScope, ctx));
 				break;
 			case "BindingVar":
 			case "VarDecl":
 			case "LetDecl":
 			case "ConstDecl":
+			case "OverrideDecl":
 				scope.addVariable(ast);
 				break;
 			case "ForStmt":

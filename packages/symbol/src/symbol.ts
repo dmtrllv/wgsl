@@ -10,17 +10,18 @@ export type SymbolType<Type extends string, T extends {} = {}> = {
 export type SymbolTypeWithScope<Type extends ScopeType> = SymbolType<Type, { readonly scope: Scope }>;
 
 export type Symbol =
-	| SymbolType<"Struct">
 	| SymbolType<"Argument">
 	| SymbolType<"TypeAlias">
 	| SymbolType<"Const">
 	| SymbolType<"Override">
+	| SymbolType<"Property">
+	| SymbolType<"RenderPass">
 	| VariableSymbol
 	| ScopedSymbol;
 
 export type ScopedSymbol =
+	| SymbolTypeWithScope<"Struct">
 	| SymbolTypeWithScope<"Function">
-	| SymbolTypeWithScope<"RenderPass">
 	| SymbolTypeWithScope<"BindingGroup">;
 
 export type VariableKind =

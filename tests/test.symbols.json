@@ -3,50 +3,75 @@
     "moduleScope": {
         "type": "Module",
         "symbols": {
-            "material": {
-                "type": "BindingGroup",
-                "name": "material",
+            "albedo": {
+                "name": "albedo",
+                "type": "Variable",
+                "kind": "var",
+                "accessMode": null,
+                "addressSpace": "uniform"
+            },
+            "roughness": {
+                "name": "roughness",
+                "type": "Variable",
+                "kind": "var",
+                "accessMode": null,
+                "addressSpace": "uniform"
+            },
+            "metallic": {
+                "name": "metallic",
+                "type": "Variable",
+                "kind": "var",
+                "accessMode": null,
+                "addressSpace": "uniform"
+            },
+            "tiling": {
+                "name": "tiling",
+                "type": "Variable",
+                "kind": "var",
+                "accessMode": null,
+                "addressSpace": "uniform"
+            },
+            "VertexInput": {
+                "type": "Struct",
+                "name": "VertexInput",
                 "scope": {
-                    "type": "BindingGroup",
+                    "type": "Struct",
                     "symbols": {
-                        "albedo": {
-                            "name": "albedo",
-                            "type": "Variable",
-                            "kind": "var",
-                            "accessMode": null,
-                            "addressSpace": "uniform"
+                        "position": {
+                            "type": "Property",
+                            "name": "position"
                         },
-                        "roughness": {
-                            "name": "roughness",
-                            "type": "Variable",
-                            "kind": "var",
-                            "accessMode": null,
-                            "addressSpace": "uniform"
+                        "normal": {
+                            "type": "Property",
+                            "name": "normal"
                         },
-                        "metallic": {
-                            "name": "metallic",
-                            "type": "Variable",
-                            "kind": "var",
-                            "accessMode": null,
-                            "addressSpace": "uniform"
-                        },
-                        "tiling": {
-                            "name": "tiling",
-                            "type": "Variable",
-                            "kind": "var",
-                            "accessMode": null,
-                            "addressSpace": "uniform"
+                        "uv": {
+                            "type": "Property",
+                            "name": "uv"
                         }
                     }
                 }
             },
-            "VertexInput": {
-                "type": "Struct",
-                "name": "VertexInput"
-            },
             "VertexOutput": {
                 "type": "Struct",
-                "name": "VertexOutput"
+                "name": "VertexOutput",
+                "scope": {
+                    "type": "Struct",
+                    "symbols": {
+                        "position": {
+                            "type": "Property",
+                            "name": "position"
+                        },
+                        "normal": {
+                            "type": "Property",
+                            "name": "normal"
+                        },
+                        "uv": {
+                            "type": "Property",
+                            "name": "uv"
+                        }
+                    }
+                }
             },
             "PI": {
                 "name": "PI",
@@ -62,6 +87,11 @@
                 "name": "ENABLE_SHADOWS",
                 "type": "Variable",
                 "kind": "const"
+            },
+            "MSAA_SAMPLES": {
+                "name": "MSAA_SAMPLES",
+                "type": "Variable",
+                "kind": "override"
             },
             "frameCount": {
                 "name": "frameCount",
@@ -197,123 +227,6 @@
                 "scope": {
                     "type": "Function",
                     "symbols": {}
-                }
-            },
-            "Shadow": {
-                "type": "RenderPass",
-                "name": "Shadow",
-                "scope": {
-                    "type": "RenderPass",
-                    "symbols": {
-                        "resource": {
-                            "type": "BindingGroup",
-                            "name": "resource",
-                            "scope": {
-                                "type": "BindingGroup",
-                                "symbols": {
-                                    "shadowMap": {
-                                        "name": "shadowMap",
-                                        "type": "Variable",
-                                        "kind": "var",
-                                        "accessMode": null,
-                                        "addressSpace": "handle"
-                                    }
-                                }
-                            }
-                        },
-                        "vertexMain": {
-                            "type": "Function",
-                            "name": "vertexMain",
-                            "scope": {
-                                "type": "Function",
-                                "symbols": {
-                                    "input": {
-                                        "type": "Argument",
-                                        "name": "input"
-                                    }
-                                }
-                            }
-                        },
-                        "FragOut": {
-                            "type": "Struct",
-                            "name": "FragOut"
-                        },
-                        "fragmentMain": {
-                            "type": "Function",
-                            "name": "fragmentMain",
-                            "scope": {
-                                "type": "Function",
-                                "symbols": {
-                                    "input": {
-                                        "type": "Argument",
-                                        "name": "input"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "Forward": {
-                "type": "RenderPass",
-                "name": "Forward",
-                "scope": {
-                    "type": "RenderPass",
-                    "symbols": {
-                        "resource": {
-                            "type": "BindingGroup",
-                            "name": "resource",
-                            "scope": {
-                                "type": "BindingGroup",
-                                "symbols": {
-                                    "depthTexture": {
-                                        "name": "depthTexture",
-                                        "type": "Variable",
-                                        "kind": "var",
-                                        "accessMode": null,
-                                        "addressSpace": "handle"
-                                    },
-                                    "shadowMap": {
-                                        "name": "shadowMap",
-                                        "type": "Variable",
-                                        "kind": "var",
-                                        "accessMode": null,
-                                        "addressSpace": "handle"
-                                    }
-                                }
-                            }
-                        },
-                        "vertexMain": {
-                            "type": "Function",
-                            "name": "vertexMain",
-                            "scope": {
-                                "type": "Function",
-                                "symbols": {
-                                    "input": {
-                                        "type": "Argument",
-                                        "name": "input"
-                                    }
-                                }
-                            }
-                        },
-                        "FragOut": {
-                            "type": "Struct",
-                            "name": "FragOut"
-                        },
-                        "fragmentMain": {
-                            "type": "Function",
-                            "name": "fragmentMain",
-                            "scope": {
-                                "type": "Function",
-                                "symbols": {
-                                    "input": {
-                                        "type": "Argument",
-                                        "name": "input"
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

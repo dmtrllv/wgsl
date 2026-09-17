@@ -1,4 +1,4 @@
-import { Ast, BindingVarDeclAst, DeclarationAst, ConstDeclAst, LetDeclAst, VarDeclAst } from "@wgsl/ast";
+import { Ast, DeclarationAst, VarDeclarationAst } from "@wgsl/ast";
 import { ScopedSymbol, Symbol, VariableSymbol } from "./symbol.js";
 import { Mutable } from "@wgsl/utils";
 import { SymbolTable } from "./table.js";
@@ -16,7 +16,7 @@ export class Scope {
 		this.table = symbolTable;
 	}
 
-	public addVariable(ast: BindingVarDeclAst | VarDeclAst | LetDeclAst | ConstDeclAst) {
+	public addVariable(ast: VarDeclarationAst) {
 		const name = ast.name.value;
 
 		if (this.symbols.has(name)) {
@@ -40,6 +40,9 @@ export class Scope {
 				break;
 			case "LetDecl":
 				props.kind = "let";
+				break;
+			case "OverrideDecl":
+				props.kind = "override";
 				break;
 		}
 
