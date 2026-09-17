@@ -1,4 +1,4 @@
-import { DiagnosticError, DiagnosticsContext, DiagnosticSeverity, span } from "@wgsl/core";
+import { DiagnosticsContext, DiagnosticSeverity, span } from "@wgsl/core";
 import { Comment, Token, TokenType, tokenTypeToString, Whitespace } from "@wgsl/lexer";
 
 export class Iter {
@@ -37,18 +37,28 @@ export class Iter {
 		this._nextPtr++;
 	}
 
-	public current(): Token {
-		this._ctx.assert(() => this._nextPtr !== 0, `Iterator not yet started!`, this._source, span(this._nextPtr, this._nextPtr));
+	public current(): Token | null {
+		if (this._nextPtr === 0) {
+			this._ctx.add(DiagnosticSeverity.Error, `Iterator not yet started!`, this._source, span(this._nextPtr, this._nextPtr));
+			return null;
+		}
 		return this._tokens[this._nextPtr - 1]!;
 	}
 
-	public peek(skip: number = 0): Token {
-		this._ctx.assert(() => !this.ended, `End of tokens reached!`, this._source, span(this._nextPtr, this._nextPtr));
+	public peek(skip: number = 0): Token | null {
+		this.skipUnwanted();
+		if (this.ended) {
+			this._ctx.add(DiagnosticSeverity.Error, `End of tokens reached!`, this._source, span(this._nextPtr, this._nextPtr));
+			return null;
+		}
 		return this._tokens[this._nextPtr + skip]!;
 	}
 
-	public next(): Token {
-		this._ctx.assert(() => !this.ended, `End of tokens reached!`, this._source, span(this._nextPtr, this._nextPtr));
+	public next(): Token | null {
+		if (this.ended) {
+			this._ctx.add(DiagnosticSeverity.Error, `End of tokens reached!`, this._source, span(this._nextPtr, this._nextPtr));
+			return null;
+		}
 		return this._tokens[this._nextPtr++]!;
 	}
 
@@ -58,20 +68,20 @@ export class Iter {
 
 	public expect(type: TokenType) {
 		const token = this.next();
-		if (token.type !== type) {
+		if (token && (token.type !== type)) {
 			const tokenValue = tokenTypeToString(type);
 			const value = this.getSource(token);
-			throw new DiagnosticError(DiagnosticSeverity.Error, `Expected ${tokenValue} but found ${token.type.kind}(${value}) at ${this.sourcePath}:${token.position.line}:${token.position.column}!`);
+			this._ctx.add(DiagnosticSeverity.Error, `Expected ${tokenValue} but found ${token.type.kind}(${value}) at ${this.sourcePath}:${token.position.line}:${token.position.column}!`);
 		}
 		return token;
 	}
 
 	public isNext(type: TokenType) {
-		return this.peek().type === type;
+		return this.peek()?.type === type;
 	}
 
 	public nextIf(type: TokenType): Token | null {
-		if (this.peek().type === type) {
+		if (this.peek()?.type === type) {
 			return this.next();
 		}
 		return null;

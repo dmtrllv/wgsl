@@ -18,7 +18,14 @@ import { TypeAliasAst } from "./alias.js";
 export type AstType<Name extends string, Data extends {} = {}> = {
 	readonly type: Name;
 	readonly span: Span;
-} & Data;
+} & Data | InvalidAst;
+
+export type InvalidAst = {
+	readonly type: "Invalid";
+	readonly span: Span;
+};
+
+export const isValid = (s: Ast | null): s is Exclude<Ast, InvalidAst> => s !== null && s.type !== "Invalid";
 
 export type Ast =
 	| ModuleAst

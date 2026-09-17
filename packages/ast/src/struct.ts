@@ -10,7 +10,9 @@ import { parseType, TypeAst } from "./type.js";
 
 export const parseStruct = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<StructAst>(iter, () => {
 	iter.expect(Keyword.Struct);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
+	if (!name)
+		return null;
 	iter.expect(Sep.LBrace);
 
 	const properties: StructPropertyAst[] = [];
@@ -19,8 +21,9 @@ export const parseStruct = (iter: Iter, attributes: AttributeAst[], ctx: Diagnos
 		if (iter.isNext(Sep.RBrace)) {
 			break;
 		}
-
-		properties.push(parseProperty(iter, ctx));
+		const prop = parseProperty(iter, ctx)
+		if (prop)
+			properties.push(prop);
 
 		if (!iter.nextIf(Sep.Comma)) {
 			break;
@@ -41,10 +44,15 @@ export const parseProperty = (iter: Iter, ctx: DiagnosticsContext) => parseWithS
 	const attributes: AttributeAst[] = [];
 
 	while (iter.nextIf(Op.At) !== null) {
-		attributes.push(parseAttribute(iter, ctx));
+		const attr = parseAttribute(iter, ctx);
+		if (attr)
+			attributes.push(attr);
 	}
 
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
+	if(!name)
+		return null;
+
 	iter.expect(Sep.Colon);
 	const typeName = parseType(iter, ctx);
 
@@ -57,7 +65,9 @@ export const parseProperty = (iter: Iter, ctx: DiagnosticsContext) => parseWithS
 });
 
 const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst>(iter, () => {
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
+	if(!name)
+		return null;
 	const args = iter.isNext(Sep.LParen) ? parseFunctionArgExprList(iter, ctx) : null;
 
 	return {

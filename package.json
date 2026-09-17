@@ -20,6 +20,7 @@
 		"watch-utils": "cd packages/utils && npm run watch",
 		"watch-lexer": "cd packages/lexer && npm run watch",
 		"watch-ast": "cd packages/ast && npm run watch",
-		"watch-symbol": "cd packages/symbol && npm run watch"
+		"watch-symbol": "cd packages/symbol && npm run watch",
+		"watch-type": "cd packages/type && npm run watch"
 	}
 }

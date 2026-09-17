@@ -10,7 +10,7 @@ import { AttributeAst } from "./attr.js";
 
 export const parseVarDeclaration = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<VarDeclAst>(iter, () => {
 	iter.expect(Keyword.Var);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	const typeName = iter.nextIf(Sep.Colon) && parseType(iter, ctx);
 	const expr = iter.nextIf(Op.Assign) && parseExpr(iter, 0, ctx);
 	iter.expect(Sep.Semicolon);
@@ -30,7 +30,7 @@ export type VarDeclAst = AstType<"VarDecl", {
 
 export const parseConstDeclaration = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<ConstDeclAst>(iter, () => {
 	iter.expect(Keyword.Const);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	const typeName = iter.nextIf(Sep.Colon) && parseType(iter, ctx);
 	const expr = iter.nextIf(Op.Assign) && parseExpr(iter, 0, ctx);
 	iter.expect(Sep.Semicolon);
@@ -51,7 +51,7 @@ export type ConstDeclAst = AstType<"ConstDecl", {
 
 export const parseLetDeclaration = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<LetDeclAst>(iter, () => {
 	iter.expect(Keyword.Let);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	const typeName = iter.nextIf(Sep.Colon) && parseType(iter, ctx);
 	const expr = iter.nextIf(Op.Assign) && parseExpr(iter, 0, ctx);
 	iter.expect(Sep.Semicolon);
@@ -72,7 +72,7 @@ export type LetDeclAst = AstType<"LetDecl", {
 
 export const parseOverrideDeclaration = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<OverrideDeclAst>(iter, () => {
 	iter.expect(Keyword.Override);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	const typeName = iter.nextIf(Sep.Colon) && parseType(iter, ctx);
 	const expr = iter.nextIf(Op.Assign) && parseExpr(iter, 0, ctx);
 	iter.expect(Sep.Semicolon);

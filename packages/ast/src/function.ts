@@ -11,10 +11,10 @@ import { ExprAst, parseExpr } from "./expr.js";
 
 export const parseFunction = (iter: Iter, attributes: AttributeAst[], ctx: DiagnosticsContext) => parseWithSpan<FunctionAst>(iter, () => {
 	iter.expect(Keyword.Fn);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	const args = parseFunctionArgList(iter, ctx);
 	let returnType: TypeAst | null = null;
-	if(iter.nextIf(Op.Sub)) {
+	if (iter.nextIf(Op.Sub)) {
 		iter.expect(Op.Gt);
 		returnType = parseType(iter, ctx);
 	}
@@ -35,7 +35,9 @@ export const parseFunctionArgList = (iter: Iter, ctx: DiagnosticsContext) => par
 		if (iter.nextIf(Sep.RParen)) {
 			break;
 		}
-		args.push(parseFunctionArg(iter, ctx));
+		const arg = parseFunctionArg(iter, ctx);
+		if (arg)
+			args.push(arg);
 		if (iter.nextIf(Sep.Comma) === null) {
 			iter.expect(Sep.RParen);
 			break;
@@ -49,7 +51,7 @@ export const parseFunctionArgList = (iter: Iter, ctx: DiagnosticsContext) => par
 });
 
 export const parseFunctionArg = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<FunctionArgAst>(iter, () => {
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	iter.expect(Sep.Colon);
 	const typeName = parseType(iter, ctx);
 	return {
@@ -67,7 +69,9 @@ export const parseFunctionArgExprList = (iter: Iter, ctx: DiagnosticsContext) =>
 		if (iter.nextIf(Sep.RParen)) {
 			break;
 		}
-		args.push(parseExpr(iter, 0, ctx));
+		const expr = parseExpr(iter, 0, ctx);
+		if (expr)
+			args.push(expr);
 		if (iter.nextIf(Sep.Comma) === null) {
 			iter.expect(Sep.RParen);
 			break;

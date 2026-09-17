@@ -6,7 +6,8 @@ import { parseWithSpan } from "./parser.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
 
 export const parseType = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<TypeAst>(iter, () => {
-	let name: IdentAst;
+	let name: IdentAst | null = null;
+
 	if (iter.isNext(Keyword.Array) !== null) {
 		name = parseWithSpan(iter, () => {
 			iter.skip();
@@ -16,14 +17,19 @@ export const parseType = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<
 			}
 		});
 	} else {
-		name = parseIdent(iter);
+		name = parseIdent(iter, ctx);
 	}
+
+	if(!name)
+		return null;
 
 	if (iter.nextIf(Op.Lt)) {
 		let generics: TypeAst[] = [];
 
 		while (!iter.ended) {
-			generics.push(parseType(iter, ctx));
+			const type = parseType(iter, ctx);
+			if (type)
+				generics.push(type);
 			if (iter.nextIf(Op.Gt)) {
 				return {
 					type: "GenericType",

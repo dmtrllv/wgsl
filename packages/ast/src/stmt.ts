@@ -10,6 +10,9 @@ import { parseScope, StmtScopeAst } from "./scope.js";
 export const parseStatement = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<StmtAst>(iter, () => {
 	const token = iter.peek();
 
+	if (!token)
+		return null;
+
 	switch (token.type) {
 		case Keyword.Var:
 			return parseVarDeclaration(iter, ctx);
@@ -62,14 +65,16 @@ export const parseSwitch = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpa
 			break;
 		if (iter.nextIf(Keyword.Default)) {
 			if (defaultCase !== null) {
-				const pos = iter.current().position;
-				ctx.add(DiagnosticSeverity.Error, `Multiple default cases found at ${iter.sourcePath}:${pos.line}:${pos.columnOffset}`);
+				const pos = iter.current()?.position;
+				ctx.add(DiagnosticSeverity.Error, `Multiple default cases found at ${iter.sourcePath}:${pos?.line}:${pos?.columnOffset}`);
 			} else {
 				iter.expect(Sep.Colon);
 				defaultCase = parseScope(iter, ctx);
 			}
 		} else {
-			cases.push(parseSwitchCase(iter, ctx));
+			const s = parseSwitchCase(iter, ctx);
+			if (s)
+				cases.push(s);
 		}
 	}
 
@@ -110,7 +115,9 @@ export const parseSwitchCase = (iter: Iter, ctx: DiagnosticsContext) => parseWit
 	const selectors: ExprAst[] = [];
 	iter.expect(Keyword.Case);
 	while (true) {
-		selectors.push(parseExpr(iter, 0, ctx));
+		const expr = parseExpr(iter, 0, ctx);
+		if (expr)
+			selectors.push(expr);
 		if (!iter.nextIf(Sep.Comma)) {
 			iter.expect(Sep.Colon);
 			break;
@@ -150,7 +157,8 @@ export const parseFor = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<F
 		continuing = parseExpr(iter, 0, ctx);
 		iter.expect(Sep.RParen);
 	}
-	let body: StmtScopeAst = parseScope(iter, ctx);
+
+	const body = parseScope(iter, ctx);
 
 	return {
 		type: "ForStmt",
@@ -231,8 +239,7 @@ export const parseIfElse = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpa
 			}
 		});
 
-		if (ifElse.type === "Else") {
-
+		if (!ifElse || ifElse.type === "Else") {
 			break;
 		}
 	}
@@ -285,7 +292,7 @@ export type ForStmtAst = AstType<"ForStmt", {
 	initializer: VarDeclAst | ExprAst | null;
 	condition: ExprAst | null;
 	continuing: ExprAst | null;
-	body: StmtScopeAst;
+	body: StmtScopeAst | null;
 }>;
 
 export type LoopStmtAst = AstType<"LoopStmt", {

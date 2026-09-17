@@ -1,5 +1,5 @@
 import { DiagnosticsContext } from "@wgsl/core";
-import { AstType } from "./ast.js";
+import { AstType, isValid } from "./ast.js";
 import { Iter } from "./iter.js";
 import { parseType, TypeAst } from "./type.js";
 import { Keyword, Op, Sep } from "@wgsl/lexer";
@@ -12,12 +12,19 @@ export const parseBindingVar = (iter: Iter, attributes: AttributeAst[], ctx: Dia
 	let addressSpace: BindingAddressSpace = "handle";
 	let readWrite: BindingAccessMode | null = null;
 	if (iter.nextIf(Op.Lt)) {
-		const s = parseIdent(iter);
+		const s = parseIdent(iter, ctx);
+		if (!isValid(s))
+			return s;
+
 		if (!isBindingAddressSpace(s.value))
 			throw new Error("Invalid address space");
 		if (s.value === "storage") {
 			iter.expect(Sep.Comma);
-			const rw = parseIdent(iter);
+			const rw = parseIdent(iter, ctx);
+
+			if (!isValid(rw))
+				return rw;
+
 			if (!isReadWriteMode(rw.value)) {
 				throw new Error("Invalid read write mode");
 			}
@@ -28,8 +35,9 @@ export const parseBindingVar = (iter: Iter, attributes: AttributeAst[], ctx: Dia
 		iter.expect(Op.Gt);
 	}
 
-	const name = parseIdent(iter);
-
+	const name = parseIdent(iter, ctx);
+	if (!isValid(name))
+		return name;
 	iter.expect(Sep.Colon);
 
 	const resourceType = parseType(iter, ctx);
@@ -45,11 +53,6 @@ export const parseBindingVar = (iter: Iter, attributes: AttributeAst[], ctx: Dia
 		resourceType
 	}
 });
-
-
-//export const parseResourceType = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<ResourceTypeAst>(iter, () => {
-
-//});
 
 export type BindingVarDeclAst = AstType<"BindingVar", {
 	attributes: AttributeAst[],

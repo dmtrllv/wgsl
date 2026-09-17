@@ -7,6 +7,8 @@ export const parseImport = (iter: Iter) => parseWithSpan<ImportAst>(iter, () => 
 	iter.expect(Keyword.Import);
 	const path = iter.expect(StrLiteral);
 	iter.expect(Sep.Semicolon);
+	if (!path)
+		return null;
 	return {
 		type: "Import",
 		path: iter.getSource(path).slice(1, -1)

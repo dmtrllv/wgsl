@@ -1,4 +1,4 @@
-import { Ast, DeclarationAst, VarDeclarationAst } from "@wgsl/ast";
+import { Ast, DeclarationAst, isValid, VarDeclarationAst } from "@wgsl/ast";
 import { ScopedSymbol, Symbol, VariableSymbol } from "./symbol.js";
 import { Mutable } from "@wgsl/utils";
 import { SymbolTable } from "./table.js";
@@ -17,6 +17,9 @@ export class Scope {
 	}
 
 	public addVariable(ast: VarDeclarationAst) {
+		if(!isValid(ast) || !isValid(ast.name))
+			return;
+
 		const name = ast.name.value;
 
 		if (this.symbols.has(name)) {
@@ -50,6 +53,9 @@ export class Scope {
 	}
 
 	public add<T extends Exclude<Symbol, ScopedSymbol | VariableSymbol>>(type: T["type"], ast: DeclarationAst) {
+		if(!isValid(ast) || !isValid(ast.name))
+			return;
+
 		const name = ast.name.value;
 		if (this.symbols.has(name)) {
 			throw new Error("duplicate name " + name + " found!");
@@ -58,6 +64,9 @@ export class Scope {
 	}
 
 	public addScoped<T extends ScopedSymbol>(type: T["type"], ast: DeclarationAst) {
+		if(!isValid(ast) || !isValid(ast.name))
+			throw new Error(`Cannot add scope for invalid ast!`);
+		
 		const name = ast.name.value;
 		if (this.symbols.has(name)) {
 			throw new Error("duplicate name " + name + " found!");

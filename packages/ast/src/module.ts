@@ -14,41 +14,69 @@ import { BindingVarDeclAst, parseBindingVar } from "./binding.js";
 import { ConstDeclAst, OverrideDeclAst, parseConstDeclaration, parseOverrideDeclaration } from "./var.js";
 import { parseTypeAlias, TypeAliasAst } from "./alias.js";
 
-export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst => parseWithSpan<ModuleAst>(iter, () => {
+export const parseModule = (iter: Iter, ctx: DiagnosticsContext): ModuleAst | null => parseWithSpan<ModuleAst>(iter, () => {
 	const imports: ImportAst[] = [];
 	const declarations: DeclarationAst[] = [];
 
 	while (!iter.ended) {
 		const token = iter.peek();
-		switch (token.type) {
-			case Keyword.Alias:
-				declarations.push(parseTypeAlias(iter, ctx));
+		switch (token?.type) {
+			case Keyword.Alias: {
+				const ast = parseTypeAlias(iter, ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
-			case Keyword.Override:
-				declarations.push(parseOverrideDeclaration(iter, [], ctx));
+			}
+			case Keyword.Override: {
+				const ast = parseOverrideDeclaration(iter, [], ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
-			case Keyword.Import:
-				imports.push(parseImport(iter));
+			}
+			case Keyword.Import: {
+				const ast = parseImport(iter);
+				if (ast)
+					imports.push(ast);
 				break;
-			case Keyword.Const:
-				declarations.push(parseConstDeclaration(iter, [], ctx));
+			}
+			case Keyword.Const: {
+				const ast = parseConstDeclaration(iter, [], ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
-			case Op.At:
-				declarations.push(parseAttributed(iter, ctx));
+			}
+			case Op.At: {
+				const ast = parseAttributed(iter, ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
-			case Keyword.Struct:
-				declarations.push(parseStruct(iter, [], ctx));
+			}
+			case Keyword.Struct: {
+				const ast = parseStruct(iter, [], ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
-			case Keyword.Fn:
-				declarations.push(parseFunction(iter, [], ctx));
+			}
+			case Keyword.Fn: {
+				const ast = parseFunction(iter, [], ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
-			case Keyword.Var:
-				declarations.push(parseBindingVar(iter, [], ctx));
+			}
+			case Keyword.Var: {
+				const ast = parseBindingVar(iter, [], ctx);
+				if (ast)
+					declarations.push(ast);
 				break;
+			}
 			default:
 				const token = iter.next();
-				const source = iter.getSource(token);
-				ctx.add(DiagnosticSeverity.Error, `Invalid token ${token.type.kind} ${source} at ${iter.sourcePath}:${token.position.line}:${token.position.columnOffset}!`);
+				if (token) {
+					const source = iter.getSource(token);
+					ctx.add(DiagnosticSeverity.Error, `Invalid token ${token.type.kind} ${source} at ${iter.sourcePath}:${token.position.line}:${token.position.columnOffset}!`);
+				} else {
+					ctx.add(DiagnosticSeverity.Error, `Invalid token!`);
+				}
 				break;
 		}
 	}
@@ -64,7 +92,7 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 	const attributes: AttributeAst[] = [];
 	while (iter.isNext(Op.At)) {
 		const attr = parseAttribute(iter, ctx);
-		if (attr.type === "Attribute") {
+		if (attr?.type === "Attribute") {
 			attributes.push(attr);
 		} else {
 			return attr;
@@ -72,7 +100,7 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 	}
 
 	const token = iter.peek();
-	switch (token.type) {
+	switch (token?.type) {
 		case Keyword.Const:
 			return parseConstDeclaration(iter, attributes, ctx);
 		case Keyword.Struct:
@@ -89,7 +117,11 @@ const parseAttributed = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<D
 
 const parseAttribute = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<AttributeAst | BindingGroupAst | RenderPassAst>(iter, () => {
 	iter.expect(Op.At);
-	const ident = parseIdent(iter);
+	const ident = parseIdent(iter, ctx);
+	
+	if (!ident || !("value" in ident))
+		return null;
+
 	switch (ident.value) {
 		case "object":
 		case "material":

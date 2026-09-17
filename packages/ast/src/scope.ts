@@ -11,9 +11,11 @@ export const parseScope = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan
 	while (!iter.ended) {
 		if (iter.nextIf(Sep.RBrace))
 			break;
-		statements.push(parseStatement(iter, ctx));
+		const stmt = parseStatement(iter, ctx);
+		if (stmt)
+			statements.push();
 	}
-	
+
 	return {
 		type: "StatementScope",
 		statements: []

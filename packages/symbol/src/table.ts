@@ -1,4 +1,4 @@
-import { Ast, isVarDeclarationAst, ModuleAst } from "@wgsl/ast";
+import { Ast, isValid, isVarDeclarationAst, ModuleAst } from "@wgsl/ast";
 import { Scope } from "./scope.js";
 import { DiagnosticsContext } from "@wgsl/core";
 
@@ -11,23 +11,25 @@ export class SymbolTable {
 	public constructor(ast: ModuleAst, ctx: DiagnosticsContext) {
 		this.scopes = new Map<Ast, Scope>();
 		this.moduleScope = new Scope("Module", null, this);
-		ast.declarations.forEach(decl => this.resolve(decl, this.moduleScope, ctx));
+		if (isValid(ast))
+			ast.declarations.forEach(decl => this.resolve(decl, this.moduleScope, ctx));
 	}
 
 	private resolve = (ast: Ast, scope: Scope, ctx: DiagnosticsContext) => {
 		switch (ast.type) {
 			case "Struct":
 				const structScope = scope.addScoped("Struct", ast);
+				//if (!isValid(structScope))
+					//break;
 				ast.properties.forEach(prop => structScope.add("Property", prop));
 				break;
 			case "BindingGroup":
-				//const bindScope = scope.addScoped("BindingGroup", ast);
 				ast.declarations.forEach(decl => this.resolve(decl, scope, ctx));
 				break;
 			case "Function":
 				const fnScope = scope.addScoped("Function", ast);
-				ast.argList.arguments.forEach(arg => fnScope.add("Argument", arg));
-				ast.body.statements.forEach(stmt => this.resolve(stmt, fnScope, ctx));
+				isValid(ast.argList) && ast.argList.arguments.forEach(arg => fnScope.add("Argument", arg));
+				isValid(ast.body) && ast.body.statements.forEach(stmt => this.resolve(stmt, fnScope, ctx));
 				break;
 			case "RenderPass":
 				const rpScope = scope.addBlockScope(ast);
@@ -44,21 +46,21 @@ export class SymbolTable {
 				const forScope = scope.addBlockScope(ast);
 				if (ast.initializer && isVarDeclarationAst(ast.initializer))
 					forScope.addVariable(ast.initializer);
-				ast.body.statements.forEach(stmt => this.resolve(stmt, forScope, ctx));
+				isValid(ast.body) && ast.body.statements.forEach(stmt => this.resolve(stmt, forScope, ctx));
 				break;
 			case "LoopStmt":
 				const loopScope = scope.addBlockScope(ast);
-				ast.body.statements.forEach(stmt => this.resolve(stmt, loopScope, ctx));
+				isValid(ast.body) && ast.body.statements.forEach(stmt => this.resolve(stmt, loopScope, ctx));
 				break;
 			case "SwitchStmt":
 				ast.cases.forEach(c => {
 					const caseScope = scope.addBlockScope(ast);
-					c.body.statements.forEach(stmt => this.resolve(stmt, caseScope, ctx));
+					isValid(c) && isValid(c.body) && c.body.statements.forEach(stmt => this.resolve(stmt, caseScope, ctx));
 				});
 				break;
 			case "ContinuingStmt":
 				const contScope = scope.addBlockScope(ast);
-				ast.body.statements.forEach(stmt => this.resolve(stmt, contScope, ctx));
+				isValid(ast.body) && ast.body.statements.forEach(stmt => this.resolve(stmt, contScope, ctx));
 				break;
 			case "StatementScope":
 				const stmtScope = scope.addBlockScope(ast);

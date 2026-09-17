@@ -7,13 +7,16 @@ import { AstType } from "./ast.js";
 import { IdentAst } from "./ident.js";
 import { parseType, TypeAst } from "./type.js";
 
-export const parseExpr = (iter: Iter, minPrecedence: number, ctx: DiagnosticsContext): ExprAst => parseWithSpan<ExprAst>(iter, () => {
+export const parseExpr = (iter: Iter, minPrecedence: number, ctx: DiagnosticsContext): ExprAst | null => parseWithSpan<ExprAst>(iter, () => {
 	let expr = parseOperand(iter, ctx);
 
 	while (true) {
+		if(!expr)
+			return null;
+
 		const token = iter.peek();
 
-		if (isExprEnd(token))
+		if (token === null || isExprEnd(token))
 			break;
 
 		if (token.type === Sep.LParen) {
@@ -32,11 +35,13 @@ export const parseExpr = (iter: Iter, minPrecedence: number, ctx: DiagnosticsCon
 
 			expr = parseWithSpan<BinaryOpAst>(iter, () => {
 				const op = iter.next();
-
-				if (op.type.kind !== "Operator")
-					throw new Error("Expected binary operator");
+				if (op === null || !BINARY_OPERATORS.includes(op.type)) {
+					return null;
+				}
 
 				const right = parseExpr(iter, precedence + 1, ctx);
+				if (right === null)
+					return null;
 
 				return {
 					type: "BinaryOp",
@@ -53,8 +58,11 @@ export const parseExpr = (iter: Iter, minPrecedence: number, ctx: DiagnosticsCon
 
 const isExprEnd = (token: Token): boolean => EXPR_END_TOKENS.includes(token.type);
 
-const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst => {
+const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst | null => {
 	const token = iter.peek();
+
+	if (token === null)
+		return null;
 
 	if (token.type.kind === "Operator") {
 		if (!UNARY_OPERATORS.has(token.type)) {
@@ -81,8 +89,11 @@ const parseOperand = (iter: Iter, ctx: DiagnosticsContext): ExprAst => {
 	return parseOperandVal(iter, ctx);
 };
 
-const parseUnary = (iter: Iter, ctx: DiagnosticsContext): UnaryOpAst => parseWithSpan<UnaryOpAst>(iter, () => {
+const parseUnary = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<UnaryOpAst>(iter, () => {
 	const token = iter.next();
+
+	if (!token)
+		return null;
 
 	if (token.type.kind !== "Operator")
 		throw new Error("Expected unary operator");
@@ -97,8 +108,11 @@ const parseUnary = (iter: Iter, ctx: DiagnosticsContext): UnaryOpAst => parseWit
 	};
 });
 
-const parseOperandVal = (iter: Iter, ctx: DiagnosticsContext): ExprAst => parseWithSpan<ExprAst>(iter, () => {
+const parseOperandVal = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<ExprAst>(iter, () => {
 	const token = iter.next();
+
+	if (!token)
+		return null;
 
 	if (token.type === Keyword.Bitcast) {
 		iter.expect(Op.Lt);
@@ -119,7 +133,9 @@ const parseOperandVal = (iter: Iter, ctx: DiagnosticsContext): ExprAst => parseW
 				iter.expect(Op.Lt);
 
 				while (!iter.ended) {
-					generics.push(parseType(iter, ctx));
+					const type = parseType(iter, ctx);
+					if (type)
+						generics.push(type);
 
 					if (iter.nextIf(Op.Gt))
 						break;
@@ -181,7 +197,9 @@ const parseArrayDecl = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<Ar
 
 	if (!iter.nextIf(Sep.RBracket))
 		while (!iter.ended) {
-			expressions.push(parseExpr(iter, 0, ctx));
+			const expr = parseExpr(iter, 0, ctx);
+			if (expr)
+				expressions.push(expr);
 			if (!iter.nextIf(Sep.Comma)) {
 				iter.expect(Sep.RBracket);
 				break;
@@ -272,6 +290,8 @@ const UNARY_OPERATORS = new Set<Op>([
 	Op.Not,
 	Op.BitNot,
 ]);
+
+const BINARY_OPERATORS = Array.from(BINARY_PRECEDENCE.keys());
 
 export type ExprAst =
 	| FunctionCallAst

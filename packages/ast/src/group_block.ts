@@ -17,7 +17,9 @@ export const parseBindingGroup = (iter: Iter, ident: IdentAst, ctx: DiagnosticsC
 			break;
 		}
 		const attributes = parseAttributes(iter, ctx);
-		declarations.push(parseBindingVar(iter, attributes, ctx));
+		const v = parseBindingVar(iter, attributes, ctx);
+		if (v)
+			declarations.push(v);
 	}
 
 	return {

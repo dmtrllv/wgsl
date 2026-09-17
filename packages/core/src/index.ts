@@ -75,36 +75,9 @@ export class DiagnosticsContext {
 		});
 	}
 
-	public try<T>(callback: () => T): T | DiagnosticError {
-		try {
-			return callback();
-		} catch (e) {
-			if (e instanceof DiagnosticError) {
-				this._diagnostics.push(e);
-				return e;
-			} else {
-				throw e;
-			}
-		}
-	}
-
-	public async tryAsync<T>(callback: () => Promise<T>): Promise<T | DiagnosticError> {
-		try {
-			return await callback();
-		} catch (e) {
-			if (e instanceof DiagnosticError) {
-				this._diagnostics.push(e);
-				return e;
-			} else {
-				throw e;
-			}
-		}
-	}
-
-	public assert(condition: (() => boolean), message: string, source?: string | undefined, span?: Span | undefined) {
-		if (!condition()) {
-			throw new DiagnosticError(DiagnosticSeverity.Assert, message, source, span);
-		}
+	public addError(error: DiagnosticError) {
+		this._diagnostics.push(error);
+		return error;
 	}
 
 	public log() {

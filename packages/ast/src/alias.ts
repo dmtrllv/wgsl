@@ -8,7 +8,7 @@ import { Keyword, Op, Sep } from "@wgsl/lexer";
 
 export const parseTypeAlias = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<TypeAliasAst>(iter, () => {
 	iter.expect(Keyword.Alias);
-	const name = parseIdent(iter);
+	const name = parseIdent(iter, ctx);
 	iter.expect(Op.Assign);
 	const typeName = parseType(iter, ctx);
 	iter.expect(Sep.Semicolon);
