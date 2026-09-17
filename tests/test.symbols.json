@@ -2,6 +2,125 @@
     "scopes": {},
     "moduleScope": {
         "type": "Module",
+        "scopes": [
+            {
+                "type": "Block",
+                "scopes": [],
+                "symbols": {
+                    "shadowMap": {
+                        "name": "shadowMap",
+                        "type": "Variable",
+                        "kind": "var",
+                        "accessMode": null,
+                        "addressSpace": "handle"
+                    },
+                    "vertexMain": {
+                        "type": "Function",
+                        "name": "vertexMain",
+                        "scope": {
+                            "type": "Function",
+                            "scopes": [],
+                            "symbols": {
+                                "input": {
+                                    "type": "Argument",
+                                    "name": "input"
+                                }
+                            }
+                        }
+                    },
+                    "FragOut": {
+                        "type": "Struct",
+                        "name": "FragOut",
+                        "scope": {
+                            "type": "Struct",
+                            "scopes": [],
+                            "symbols": {
+                                "shadow": {
+                                    "type": "Property",
+                                    "name": "shadow"
+                                }
+                            }
+                        }
+                    },
+                    "fragmentMain": {
+                        "type": "Function",
+                        "name": "fragmentMain",
+                        "scope": {
+                            "type": "Function",
+                            "scopes": [],
+                            "symbols": {
+                                "input": {
+                                    "type": "Argument",
+                                    "name": "input"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "type": "Block",
+                "scopes": [],
+                "symbols": {
+                    "depthTexture": {
+                        "name": "depthTexture",
+                        "type": "Variable",
+                        "kind": "var",
+                        "accessMode": null,
+                        "addressSpace": "handle"
+                    },
+                    "shadowMap": {
+                        "name": "shadowMap",
+                        "type": "Variable",
+                        "kind": "var",
+                        "accessMode": null,
+                        "addressSpace": "handle"
+                    },
+                    "vertexMain": {
+                        "type": "Function",
+                        "name": "vertexMain",
+                        "scope": {
+                            "type": "Function",
+                            "scopes": [],
+                            "symbols": {
+                                "input": {
+                                    "type": "Argument",
+                                    "name": "input"
+                                }
+                            }
+                        }
+                    },
+                    "FragOut": {
+                        "type": "Struct",
+                        "name": "FragOut",
+                        "scope": {
+                            "type": "Struct",
+                            "scopes": [],
+                            "symbols": {
+                                "color": {
+                                    "type": "Property",
+                                    "name": "color"
+                                }
+                            }
+                        }
+                    },
+                    "fragmentMain": {
+                        "type": "Function",
+                        "name": "fragmentMain",
+                        "scope": {
+                            "type": "Function",
+                            "scopes": [],
+                            "symbols": {
+                                "input": {
+                                    "type": "Argument",
+                                    "name": "input"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ],
         "symbols": {
             "albedo": {
                 "name": "albedo",
@@ -36,6 +155,7 @@
                 "name": "VertexInput",
                 "scope": {
                     "type": "Struct",
+                    "scopes": [],
                     "symbols": {
                         "position": {
                             "type": "Property",
@@ -57,6 +177,7 @@
                 "name": "VertexOutput",
                 "scope": {
                     "type": "Struct",
+                    "scopes": [],
                     "symbols": {
                         "position": {
                             "type": "Property",
@@ -112,6 +233,7 @@
                 "name": "saturate",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {
                         "value": {
                             "type": "Argument",
@@ -125,6 +247,7 @@
                 "name": "multiply",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {
                         "a": {
                             "type": "Argument",
@@ -142,6 +265,7 @@
                 "name": "calculateNormal",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {
                         "normal": {
                             "type": "Argument",
@@ -159,6 +283,7 @@
                 "name": "testExpressions",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {
                         "value": {
                             "type": "Argument",
@@ -176,6 +301,7 @@
                 "name": "testTypes",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {}
                 }
             },
@@ -184,6 +310,7 @@
                 "name": "testAssignments",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {}
                 }
             },
@@ -192,6 +319,7 @@
                 "name": "testIf",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {
                         "value": {
                             "type": "Argument",
@@ -205,6 +333,7 @@
                 "name": "testSwitch",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {
                         "value": {
                             "type": "Argument",
@@ -218,6 +347,7 @@
                 "name": "testFor",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {}
                 }
             },
@@ -226,6 +356,7 @@
                 "name": "testLoop",
                 "scope": {
                     "type": "Function",
+                    "scopes": [],
                     "symbols": {}
                 }
             }

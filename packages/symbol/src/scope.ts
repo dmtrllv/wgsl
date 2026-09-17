@@ -75,13 +75,14 @@ export class Scope {
 		return scope;
 	}
 
-	public toJSON() {
+	public toJSON(): any {
 		const symbols: Record<string, any> = {};
 		for (const [k, v] of this.symbols) {
 			symbols[k] = JSON.parse(JSON.stringify(v));
 		}
 		return {
 			type: this.type,
+			scopes: this.blockScopes,
 			symbols
 		};
 	}
