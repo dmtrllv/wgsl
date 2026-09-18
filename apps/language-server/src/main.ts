@@ -1,7 +1,7 @@
-import { createConnection, ProposedFeatures, TextDocuments, } from "vscode-languageserver/node";
+import { createConnection, MarkupKind, ProposedFeatures, TextDocuments, } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Compiler } from "@wgsl/compiler";
-import { isDiagnosticError } from "@wgsl/core";
+import { isValid } from "@wgsl/ast";
 
 const compilers = new Map<string, Compiler>();
 
@@ -36,48 +36,49 @@ connection.onInitialized(() => {
 	connection.console.log("SERVER INITIALIZED");
 });
 
+const error = (message: string, kind: MarkupKind = "plaintext") => {
+	return msg(`Error: ${message}`, kind);
+};
+
+const msg = (message: string, kind: MarkupKind = "plaintext") => {
+	return {
+		contents: {
+			kind,
+			value: message,
+		},
+	};
+};
+
 connection.onHover(async (event) => {
 	connection.console.log(`SERVER HOVER ${event.position.line}:${event.position.character}`);
 
 	const compiler = getCompiler(event.textDocument.uri);
-	const source = documents.get(event.textDocument.uri)?.getText();
+	if (!compiler)
+		return error("Could not get compiler!");
 
-	if (compiler && source) {
-		const s = await compiler.getModule(event.textDocument.uri, source);
+	const document = documents.get(event.textDocument.uri);
+	if (!document)
+		return error("Could not get document!");
 
-		if (!s.tokens || isDiagnosticError(s.tokens)) {
-			return {
-				contents: {
-					kind: "markdown",
-					value: "WGSL ERROR!",
-				},
-			};
+	const module = await compiler?.getModule(event.textDocument.uri, document.getText());
+
+	const [ast, parents] = compiler.getAst(module, document.offsetAt(event.position));
+
+	if (ast?.type === "Identifier") {
+		if (parents[0]?.type === "StructProperty" && parents[1]?.type === "Struct") {
+			let name = "???";
+			let typeName = "???";
+			if (parents[1].name.type === "Identifier")
+				name = parents[1].name.value;
+			if(isValid(parents[0]?.typeName) && isValid(parents[0]?.typeName.name))
+				typeName = parents[0]?.typeName.name.value;
+
+			return msg(`${name}.${ast.value}: ${typeName}`);
 		}
-
-		const token = s.tokens.find(t => {
-			const c = event.position.character + 2;
-			if (t.position.line === event.position.line + 1) {
-				const cEnd = t.position.columnOffset + (t.span.end - t.span.start);
-				return t.position.columnOffset <= c && cEnd >= c;
-			}
-			return false;
-		});
-
-
-		return {
-			contents: {
-				kind: "markdown",
-				value: `${token?.type.kind || "???"}`
-			}
-		}
+		return msg(`${parents[0]?.type} ${ast.value}`);
 	}
 
-	return {
-		contents: {
-			kind: "markdown",
-			value: "Hello from WGSL!",
-		},
-	};
+	return msg(ast?.type || "?");
 });
 
 documents.onDidOpen(event => {
