@@ -22,5 +22,6 @@
 		"watch-ast": "cd packages/ast && npm run watch",
 		"watch-symbol": "cd packages/symbol && npm run watch",
 		"watch-type": "cd packages/type && npm run watch"
-	}
+	},
+	"license": "MIT"
 }
