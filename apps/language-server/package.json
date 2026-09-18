@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "vscode-languageserver": "^10.1.1",
-        "vscode-languageserver-textdocument": "^1.0.0"
+        "vscode-languageserver-textdocument": "^1.0.0",
+		"@wgsl/compiler": "0.0.1"
     }
 }

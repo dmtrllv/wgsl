@@ -1,14 +1,35 @@
-import { createConnection, TextDocuments, ProposedFeatures, InitializeParams, TextDocumentSyncKind } from "vscode-languageserver/node";
+import {
+	createConnection,
+	ProposedFeatures,
+	TextDocuments,
+} from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 const connection = createConnection(ProposedFeatures.all);
 
 const documents = new TextDocuments(TextDocument);
 
-connection.onInitialize((_params: InitializeParams) => {
+connection.onInitialize(() => {
+	connection.console.log("SERVER INITIALIZE");
+
 	return {
 		capabilities: {
-			textDocumentSync: TextDocumentSyncKind.Incremental,
+			hoverProvider: true,
+		},
+	};
+});
+
+connection.onInitialized(() => {
+	connection.console.log("SERVER INITIALIZED");
+});
+
+connection.onHover(() => {
+	connection.console.log("SERVER HOVER");
+
+	return {
+		contents: {
+			kind: "markdown",
+			value: "Hello from WGSL!",
 		},
 	};
 });

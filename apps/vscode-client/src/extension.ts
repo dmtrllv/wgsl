@@ -1,6 +1,7 @@
 import { existsSync } from "fs";
 import * as vscode from "vscode";
-import { LanguageClient, TransportKind } from "vscode-languageclient/node";
+import { LanguageClientOptions } from "vscode-languageclient";
+import { LanguageClient, ServerOptions, TransportKind } from "vscode-languageclient/node";
 
 let client: LanguageClient;
 
@@ -19,25 +20,31 @@ export function activate(context: vscode.ExtensionContext) {
 		output.appendLine(`UNHANDLED REJECTION: ${String(reason)}`);
 	});
 
-	const serverModule = vscode.Uri.joinPath(context.extensionUri, "out/language-server/main.js").fsPath;
+	const serverModule = vscode.Uri.joinPath(context.extensionUri, "../language-server/dist/main.js").fsPath;
 
 	if (!existsSync(serverModule)) {
 		output.appendLine(serverModule + " does not exists!");
 		return;
 	}
 
-	const serverOptions = {
+	const serverOptions: ServerOptions = {
 		run: {
 			module: serverModule,
 			transport: TransportKind.stdio,
+			options: {
+				cwd: vscode.Uri.joinPath(context.extensionUri, "language-server").fsPath,
+			}
 		},
 		debug: {
 			module: serverModule,
 			transport: TransportKind.stdio,
+			options: {
+				cwd: vscode.Uri.joinPath(context.extensionUri, "language-server").fsPath,
+			}
 		},
 	};
 
-	const clientOptions = {
+	const clientOptions: LanguageClientOptions = {
 		documentSelector: [
 			{
 				scheme: "file",
@@ -50,6 +57,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(client);
 	client.start();
+
+	client.start()
+		.then(() => {
+			output.appendLine("Language server started");
+		})
+		.catch((err) => {
+			output.appendLine(`Language server failed: ${err.stack ?? err}`);
+		});
 }
 
 export function deactivate() {
