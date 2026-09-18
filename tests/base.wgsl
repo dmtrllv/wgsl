@@ -8,13 +8,13 @@ struct Object {
 }
 
 struct VertexInput {
-	position: vec3f,
+	position: vec3<f32>,
 	uv0: vec3f,
 	normal: vec3f,
 }
 
 struct VertexOutput {
-	@builtin(position) position: vec4f,
+	@builtin(position) position: vec3<f32>,
 }
 
 @global {

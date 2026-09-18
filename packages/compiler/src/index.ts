@@ -30,12 +30,15 @@ export class Compiler {
 			types,
 			diagnostics: ctx.diagnostics
 		}
-
-
 	}
 
 	public async getModule(path: string, source: string) {
 		return getOrInsertAsync(this.compiledModules, path, async () => this.compile(path, source));
+	}
+
+	public async invalidate(path: string, source: string) {
+		const module = await this.compile(path, source);
+		return this.compiledModules.set(path, module);
 	}
 
 	public getAst(module: CompiledModule, offset: number): [target: Ast | null, parents: Ast[]] {

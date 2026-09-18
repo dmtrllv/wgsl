@@ -8,7 +8,7 @@ import { Keyword, Op, Sep } from "@wgsl/lexer";
 export const parseType = (iter: Iter, ctx: DiagnosticsContext) => parseWithSpan<TypeAst>(iter, () => {
 	let name: IdentAst | null = null;
 
-	if (iter.isNext(Keyword.Array) !== null) {
+	if (iter.isNext(Keyword.Array)) {
 		name = parseWithSpan(iter, () => {
 			iter.skip();
 			return {

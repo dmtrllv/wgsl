@@ -70,7 +70,7 @@ connection.onHover(async (event) => {
 			let typeName = "???";
 			if (parents[1].name.type === "Identifier")
 				name = parents[1].name.value;
-			if(isValid(parents[0]?.typeName) && isValid(parents[0]?.typeName.name))
+			if (isValid(parents[0]?.typeName) && isValid(parents[0]?.typeName.name))
 				typeName = parents[0]?.typeName.name.value;
 
 			return msg(`${name}.${ast.value}: ${typeName}`);
@@ -84,9 +84,15 @@ connection.onHover(async (event) => {
 documents.onDidOpen(event => {
 	const compiler = getCompiler(event.document.uri);
 	if (compiler)
-		compiler.compile(event.document.uri, event.document.getText());
+		compiler.getModule(event.document.uri, event.document.getText());
 });
 
 
 documents.listen(connection);
 connection.listen();
+
+documents.onDidChangeContent((event) => {
+	const compiler = getCompiler(event.document.uri);
+	if (compiler)
+		compiler.invalidate(event.document.uri, event.document.getText());
+})
